@@ -85,6 +85,12 @@ namespace WinFormsApp
                 lblStatus.Text = "Ошибка: " + ex.Message;
             }
         }
+
+
+        private void buttonTestError_Click(object sender, EventArgs e)
+        {
+            throw new Exception("Тестовая ошибка в WinForms!");
+        }
     }
 }
 

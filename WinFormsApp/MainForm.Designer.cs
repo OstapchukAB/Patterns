@@ -33,6 +33,7 @@
             txtContent = new TextBox();
             lblStatus = new Label();
             txtLog = new RichTextBox();
+            buttonTestError = new Button();
             SuspendLayout();
             // 
             // txtDirectory
@@ -101,9 +102,20 @@
             txtLog.TabIndex = 7;
             txtLog.Text = "";
             // 
+            // buttonTestError
+            // 
+            buttonTestError.Location = new Point(340, 141);
+            buttonTestError.Name = "buttonTestError";
+            buttonTestError.Size = new Size(75, 23);
+            buttonTestError.TabIndex = 8;
+            buttonTestError.Text = "TestError";
+            buttonTestError.UseVisualStyleBackColor = true;
+            buttonTestError.Click += buttonTestError_Click;
+            // 
             // MainForm
             // 
             ClientSize = new Size(428, 518);
+            Controls.Add(buttonTestError);
             Controls.Add(txtDirectory);
             Controls.Add(btnBrowse);
             Controls.Add(lstFiles);
@@ -117,5 +129,7 @@
             ResumeLayout(false);
             PerformLayout();
         }
+
+        private Button buttonTestError;
     }
 }
