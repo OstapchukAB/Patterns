@@ -1,17 +1,19 @@
-using System;
-using System.IO;
-using System.Windows.Forms;
 using MyClassLib;
 
 namespace WinFormsApp
 {
+
+
     public partial class MainForm : Form
     {
         private readonly IFileService _fileService = new FileService();
 
+
         public MainForm()
         {
             InitializeComponent();
+            Logger.InitLogger(txtLog); // Передаём TextBox для логов
+
         }
 
         // Выбор папки
@@ -21,6 +23,7 @@ namespace WinFormsApp
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 txtDirectory.Text = dialog.SelectedPath;
+                Logger.LogInfo($"Выбрана папка: {dialog.SelectedPath}");
                 LoadFiles();
             }
         }
@@ -33,10 +36,12 @@ namespace WinFormsApp
             {
                 string[] files = _fileService.GetFiles(txtDirectory.Text);
                 lstFiles.Items.AddRange(files);
+                Logger.LogInfo($"Загружено {files.Length} файлов из {txtDirectory.Text}");
                 lblStatus.Text = "Файлы загружены.";
             }
             catch (Exception ex)
             {
+                Logger.LogError("Ошибка при загрузке файлов", ex);
                 lblStatus.Text = "Ошибка: " + ex.Message;
             }
         }
@@ -50,10 +55,12 @@ namespace WinFormsApp
             try
             {
                 txtContent.Text = _fileService.ReadFile(filePath);
+                Logger.LogInfo($"Открыт файл: {filePath}");
                 lblStatus.Text = "Файл открыт.";
             }
             catch (Exception ex)
             {
+                Logger.LogError($"Ошибка при чтении файла: {filePath}", ex);
                 lblStatus.Text = "Ошибка: " + ex.Message;
             }
         }
@@ -67,12 +74,14 @@ namespace WinFormsApp
             try
             {
                 _fileService.DeleteFile(filePath);
+                Logger.LogInfo($"Удалён файл: {filePath}");
                 LoadFiles();
                 txtContent.Clear();
                 lblStatus.Text = "Файл удалён.";
             }
             catch (Exception ex)
             {
+                Logger.LogError($"Ошибка при удалении файла: {filePath}", ex);
                 lblStatus.Text = "Ошибка: " + ex.Message;
             }
         }

@@ -10,6 +10,9 @@
         private System.Windows.Forms.Button btnDelete;
         private System.Windows.Forms.TextBox txtContent;
         private System.Windows.Forms.Label lblStatus;
+        //TextBox для логов 
+        private System.Windows.Forms.RichTextBox txtLog;
+
 
         protected override void Dispose(bool disposing)
         {
@@ -67,6 +70,13 @@
             this.lblStatus.Location = new System.Drawing.Point(12, 360);
             this.lblStatus.Size = new System.Drawing.Size(400, 23);
 
+            // txtLog
+            this.txtLog = new System.Windows.Forms.RichTextBox();
+            this.txtLog.Location = new System.Drawing.Point(12, 390);
+            this.txtLog.Size = new System.Drawing.Size(400, 150);
+            this.txtLog.ReadOnly = true;
+
+
             // MainForm
             this.ClientSize = new System.Drawing.Size(430, 400);
             this.Controls.Add(this.txtDirectory);
@@ -76,6 +86,7 @@
             this.Controls.Add(this.btnDelete);
             this.Controls.Add(this.txtContent);
             this.Controls.Add(this.lblStatus);
+            this.Controls.Add(this.txtLog);
             this.Text = "Файловый менеджер";
             this.ResumeLayout(false);
             this.PerformLayout();
