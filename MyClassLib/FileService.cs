@@ -1,14 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using MyClassLib.FactoryMethod;
 
 namespace MyClassLib
 {
-    public interface IFileService
-    {
-        string[] GetFiles(string directoryPath);
-        string ReadFile(string filePath);
-        void DeleteFile(string filePath);
-    }
 
     public class FileService:IFileService
     {
@@ -24,10 +17,12 @@ namespace MyClassLib
         // Прочитать содержимое файла
         public string ReadFile(string filePath)
         {
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException($"Файл '{filePath}' не найден.");
+            //if (!File.Exists(filePath))
+            //    throw new FileNotFoundException($"Файл '{filePath}' не найден.");
 
-            return File.ReadAllText(filePath);
+            //return File.ReadAllText(filePath);
+            IFileReader reader = FileReaderFactory.CreateReader(filePath);
+            return reader.Read(filePath);
         }
 
         // Удалить файл
