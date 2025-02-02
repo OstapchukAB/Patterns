@@ -25,71 +25,97 @@
 
         private void InitializeComponent()
         {
-            this.txtDirectory = new System.Windows.Forms.TextBox();
-            this.btnBrowse = new System.Windows.Forms.Button();
-            this.lstFiles = new System.Windows.Forms.ListBox();
-            this.btnRead = new System.Windows.Forms.Button();
-            this.btnDelete = new System.Windows.Forms.Button();
-            this.txtContent = new System.Windows.Forms.TextBox();
-            this.lblStatus = new System.Windows.Forms.Label();
-            this.SuspendLayout();
-
+            txtDirectory = new TextBox();
+            btnBrowse = new Button();
+            lstFiles = new ListBox();
+            btnRead = new Button();
+            btnDelete = new Button();
+            txtContent = new TextBox();
+            lblStatus = new Label();
+            txtLog = new RichTextBox();
+            SuspendLayout();
+            // 
             // txtDirectory
-            this.txtDirectory.Location = new System.Drawing.Point(12, 12);
-            this.txtDirectory.Size = new System.Drawing.Size(320, 23);
-
+            // 
+            txtDirectory.Location = new Point(12, 12);
+            txtDirectory.Name = "txtDirectory";
+            txtDirectory.Size = new Size(320, 23);
+            txtDirectory.TabIndex = 0;
+            // 
             // btnBrowse
-            this.btnBrowse.Location = new System.Drawing.Point(340, 10);
-            this.btnBrowse.Size = new System.Drawing.Size(75, 25);
-            this.btnBrowse.Text = "Обзор";
-            this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
-
+            // 
+            btnBrowse.Location = new Point(340, 10);
+            btnBrowse.Name = "btnBrowse";
+            btnBrowse.Size = new Size(75, 25);
+            btnBrowse.TabIndex = 1;
+            btnBrowse.Text = "Обзор";
+            btnBrowse.Click += btnBrowse_Click;
+            // 
             // lstFiles
-            this.lstFiles.Location = new System.Drawing.Point(12, 45);
-            this.lstFiles.Size = new System.Drawing.Size(320, 150);
-
+            // 
+            lstFiles.Location = new Point(12, 45);
+            lstFiles.Name = "lstFiles";
+            lstFiles.Size = new Size(320, 139);
+            lstFiles.TabIndex = 2;
+            // 
             // btnRead
-            this.btnRead.Location = new System.Drawing.Point(340, 45);
-            this.btnRead.Size = new System.Drawing.Size(75, 25);
-            this.btnRead.Text = "Открыть";
-            this.btnRead.Click += new System.EventHandler(this.btnRead_Click);
-
+            // 
+            btnRead.Location = new Point(340, 45);
+            btnRead.Name = "btnRead";
+            btnRead.Size = new Size(75, 25);
+            btnRead.TabIndex = 3;
+            btnRead.Text = "Открыть";
+            btnRead.Click += btnRead_Click;
+            // 
             // btnDelete
-            this.btnDelete.Location = new System.Drawing.Point(340, 80);
-            this.btnDelete.Size = new System.Drawing.Size(75, 25);
-            this.btnDelete.Text = "Удалить";
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
-
+            // 
+            btnDelete.Location = new Point(340, 80);
+            btnDelete.Name = "btnDelete";
+            btnDelete.Size = new Size(75, 25);
+            btnDelete.TabIndex = 4;
+            btnDelete.Text = "Удалить";
+            btnDelete.Click += btnDelete_Click;
+            // 
             // txtContent
-            this.txtContent.Location = new System.Drawing.Point(12, 200);
-            this.txtContent.Size = new System.Drawing.Size(400, 150);
-            this.txtContent.Multiline = true;
-            this.txtContent.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-
+            // 
+            txtContent.Location = new Point(12, 200);
+            txtContent.Multiline = true;
+            txtContent.Name = "txtContent";
+            txtContent.ScrollBars = ScrollBars.Vertical;
+            txtContent.Size = new Size(400, 150);
+            txtContent.TabIndex = 5;
+            // 
             // lblStatus
-            this.lblStatus.Location = new System.Drawing.Point(12, 360);
-            this.lblStatus.Size = new System.Drawing.Size(400, 23);
-
+            // 
+            lblStatus.Location = new Point(12, 360);
+            lblStatus.Name = "lblStatus";
+            lblStatus.Size = new Size(400, 23);
+            lblStatus.TabIndex = 6;
+            // 
             // txtLog
-            this.txtLog = new System.Windows.Forms.RichTextBox();
-            this.txtLog.Location = new System.Drawing.Point(12, 390);
-            this.txtLog.Size = new System.Drawing.Size(400, 150);
-            this.txtLog.ReadOnly = true;
-
-
+            // 
+            txtLog.Location = new Point(12, 390);
+            txtLog.Name = "txtLog";
+            txtLog.ReadOnly = true;
+            txtLog.Size = new Size(400, 114);
+            txtLog.TabIndex = 7;
+            txtLog.Text = "";
+            // 
             // MainForm
-            this.ClientSize = new System.Drawing.Size(430, 400);
-            this.Controls.Add(this.txtDirectory);
-            this.Controls.Add(this.btnBrowse);
-            this.Controls.Add(this.lstFiles);
-            this.Controls.Add(this.btnRead);
-            this.Controls.Add(this.btnDelete);
-            this.Controls.Add(this.txtContent);
-            this.Controls.Add(this.lblStatus);
-            this.Controls.Add(this.txtLog);
-            this.Text = "Файловый менеджер";
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            // 
+            ClientSize = new Size(428, 518);
+            Controls.Add(txtDirectory);
+            Controls.Add(btnBrowse);
+            Controls.Add(lstFiles);
+            Controls.Add(btnRead);
+            Controls.Add(btnDelete);
+            Controls.Add(txtContent);
+            Controls.Add(lblStatus);
+            Controls.Add(txtLog);
+            Name = "MainForm";
+            Text = "Файловый менеджер";
+            ResumeLayout(false);
+            PerformLayout();
         }
     }
 }
