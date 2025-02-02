@@ -13,6 +13,7 @@ namespace WinFormsApp
         public static void InitLogger(RichTextBox outputBox)
         {
             _logger = new LoggerConfiguration()
+                 .MinimumLevel.Debug()
                 .WriteTo.File("logs/winforms_log.txt", rollingInterval: RollingInterval.Day)
                 .WriteTo.RichTextBox(outputBox, Serilog.Events.LogEventLevel.Information)
                 .CreateLogger();
@@ -26,6 +27,10 @@ namespace WinFormsApp
         public static void LogError(string message, Exception ex)
         {
             _logger?.Error(ex, message);
+        }
+        public static void LogFatal(string message, Exception ex)
+        {
+            _logger?.Fatal(ex, message);
         }
     }
 }
