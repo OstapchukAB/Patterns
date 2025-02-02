@@ -5,7 +5,7 @@ class Program
 {
     static void Main()
     {
-        var fileService = new FileService();
+        IFileService fileService = new FileService();
 
         while (true)
         {

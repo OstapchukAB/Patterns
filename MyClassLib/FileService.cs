@@ -3,7 +3,14 @@ using System.IO;
 
 namespace MyClassLib
 {
-    public class FileService
+    public interface IFileService
+    {
+        string[] GetFiles(string directoryPath);
+        string ReadFile(string filePath);
+        void DeleteFile(string filePath);
+    }
+
+    public class FileService:IFileService
     {
         // Получить список файлов в папке
         public string[] GetFiles(string directoryPath)
