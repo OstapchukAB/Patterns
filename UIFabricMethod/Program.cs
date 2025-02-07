@@ -17,8 +17,14 @@
 //    Повысить тестируемость: Логику создания объектов можно централизовать и при необходимости заменить на моки при тестировании.
 //    Улучшить масштабируемость: При расширении функционала не увеличивается сложность клиентского кода.
 #endregion
+#region Решение
+//Преимущества фабричного метода:
 
-namespace WithoutFactory
+//    Логика создания объектов теперь инкапсулирована в классах-«фабриках».
+//    При добавлении нового типа продукта достаточно создать новый конкретный класс создателя, не изменяя клиентский код.
+//    Клиентский код работает с абстрактными типами, что снижает связанность и повышает гибкость системы.
+#endregion
+namespace FactoryMethod
 {
     // Интерфейс продукта
     public interface IProduct
@@ -41,27 +47,59 @@ namespace WithoutFactory
             Console.WriteLine("Product B operation.");
         }
     }
+    //************** Применяем паттерн фабричный метод
+    //Абстрактный создатель - фабрика
+    public abstract class Creator
+    {
+        // Объявляем фабричный метод - метод возвращающий интерфейс IProduct
+        public abstract IProduct FactoryMethod();
+
+        //Некоторая операция использущая продукт
+        public void SomeOperation()
+        {
+            IProduct product = FactoryMethod();
+            product.DoSomething();
+        }
+    }
+
+    //Конкретный создатель А реализующий фабричный метод
+    public class ConcreteCreatorA : Creator
+    {
+        public override IProduct FactoryMethod()
+        {
+            return new ConcreteProductA();
+        }
+    }
+    //Конкретный создатель B реализующий фабричный метод
+    public class ConcreteCreatorB : Creator
+    {
+        public override IProduct FactoryMethod()
+        {
+            return new ConcreteProductB();
+        }
+    }
+
     class Program
     {
         static void Main(string[] args)
         {
             Console.WriteLine("Enter product type (A/B):");
             string input = Console.ReadLine();
-            IProduct product;
+            Creator creator;  // IProduct product;
             if (input.Equals("A", StringComparison.OrdinalIgnoreCase))
             {
-                product = new ConcreteProductA();
+                creator = new ConcreteCreatorA();   //product = new ConcreteProductA();
             }
             else if (input.Equals("B", StringComparison.OrdinalIgnoreCase))
             {
-                product = new ConcreteProductB();
+                creator = new ConcreteCreatorB(); // product = new ConcreteProductB();
             }
             else
             {
                 Console.WriteLine("Invalid product type.");
                 return;
             }
-            product.DoSomething();
+            creator.SomeOperation();  //product.DoSomething();
         }
     }
 }
