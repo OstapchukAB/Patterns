@@ -9,6 +9,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConsole", "UIConsole\UICo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsApp", "WinFormsApp\WinFormsApp.csproj", "{A7CAC68F-A571-43AA-AEA1-D2EC32C6F09A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AbstractFabric", "AbstractFabric\AbstractFabric.csproj", "{E5CD9084-1E3C-4DC7-B7D1-FBDC8B41E626}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIAbstractFabric", "UIAbstractFabric\UIAbstractFabric.csproj", "{838DE5CC-C25A-4ABD-99AD-A1BB723B63C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,14 @@ Global
 		{A7CAC68F-A571-43AA-AEA1-D2EC32C6F09A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7CAC68F-A571-43AA-AEA1-D2EC32C6F09A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7CAC68F-A571-43AA-AEA1-D2EC32C6F09A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E5CD9084-1E3C-4DC7-B7D1-FBDC8B41E626}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E5CD9084-1E3C-4DC7-B7D1-FBDC8B41E626}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E5CD9084-1E3C-4DC7-B7D1-FBDC8B41E626}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E5CD9084-1E3C-4DC7-B7D1-FBDC8B41E626}.Release|Any CPU.Build.0 = Release|Any CPU
+		{838DE5CC-C25A-4ABD-99AD-A1BB723B63C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{838DE5CC-C25A-4ABD-99AD-A1BB723B63C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{838DE5CC-C25A-4ABD-99AD-A1BB723B63C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{838DE5CC-C25A-4ABD-99AD-A1BB723B63C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
