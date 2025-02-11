@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIFabricMethod", "UIFabricM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConsoleExample", "UIConsoleExample\UIConsoleExample.csproj", "{7FB06D74-D304-4164-B180-6A3FAAD0EC77}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConsoleExample.Tests", "UIConsoleExample.Tests\UIConsoleExample.Tests.csproj", "{CC325AD8-3F6F-45B0-A22B-FE1F5021E706}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{7FB06D74-D304-4164-B180-6A3FAAD0EC77}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7FB06D74-D304-4164-B180-6A3FAAD0EC77}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7FB06D74-D304-4164-B180-6A3FAAD0EC77}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC325AD8-3F6F-45B0-A22B-FE1F5021E706}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC325AD8-3F6F-45B0-A22B-FE1F5021E706}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC325AD8-3F6F-45B0-A22B-FE1F5021E706}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC325AD8-3F6F-45B0-A22B-FE1F5021E706}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

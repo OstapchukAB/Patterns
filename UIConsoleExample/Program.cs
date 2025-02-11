@@ -39,26 +39,26 @@
         void DisplayInfo(string name);
     }
 
-    class SedanCar : Car
+    public class SedanCar : Car
     {
         public SedanCar(string model) : base(model)
         {
         }
     }
-    class SuvCar : Car
+    public class SuvCar : Car
     {
         public SuvCar(string model) : base(model)
         {
         }
     }
-    class CoupeCar : Car
+    public class CoupeCar : Car
     {
         public CoupeCar(string model) : base(model)
         {
         }
     }
 
-    class CreatorSedan : CarFactory
+    public class SedanFactory : CarFactory
     {
         public override Car FactoryCar(string? name=null)
         {
@@ -69,7 +69,7 @@
         }
 
     }
-    class CreatorSuv : CarFactory
+    public class SuvFactory : CarFactory
     {
         public override Car FactoryCar(string? name=null)
         {
@@ -78,7 +78,7 @@
             return car;
         }
     }
-    class CreatorCoupe : CarFactory
+    public class CoupeFactory : CarFactory
     {
         public override Car FactoryCar(string? name=null)
         {
@@ -89,7 +89,7 @@
     }
 
     // Магазин автомобилей, где выбор и создание конкретного автомобиля осуществляется через условные операторы
-    class CarStore
+    public class CarStore
     {
         public void SellCar(CarFactory creator,string? name =null)
         {
@@ -108,8 +108,8 @@
         static void Main(string[] args)
         {
             CarStore store = new CarStore();
-            store.SellCar(new CreatorSuv());
-            store.SellCar(new CreatorSedan());
+            store.SellCar(new SuvFactory());
+            store.SellCar(new SedanFactory());
         }
     }
 }
