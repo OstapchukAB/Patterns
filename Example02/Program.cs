@@ -11,9 +11,9 @@
 namespace NotificationSystem
 {
     // Базовый класс для уведомлений
-    abstract class Notification
+    public abstract class Notification
     {
-        public readonly string _message;
+        protected readonly string _message;
 
         public Notification(string message)
         {
@@ -26,19 +26,57 @@ namespace NotificationSystem
             Console.WriteLine("Notification: " + _message);
 
         }
-        //фабричный метод
-        public abstract Notification FactoryNotification();
+
+    }
+
+    public abstract class FactoryNotification
+    {
+        public abstract Notification FabricMethodNotification();
+    }
+
+    public class CreateEmailNotification : FactoryNotification
+    {
+        readonly string _message;
+        public CreateEmailNotification(string message)
+        {
+            _message = message;
+        }
+
+        public override Notification FabricMethodNotification()
+        {
+            return new EmailNotification(_message);
+        }
+    }
+    public class CreateSmsNotification : FactoryNotification
+    {
+        readonly string _message;
+        public CreateSmsNotification(string message)
+        {
+            _message = message;
+        }
+        public override Notification FabricMethodNotification()
+        {
+            return new SmsNotification(_message);
+        }
+    }
+
+    public class CreatePushNotification : FactoryNotification
+    {
+        readonly string _message;
+        public CreatePushNotification(string message)
+        {
+            _message = message;
+        }
+        public override Notification FabricMethodNotification()
+        {
+            return new PushNotification(_message);
+        }
     }
 
     // Конкретное уведомление: Email
     class EmailNotification : Notification
     {
         public EmailNotification(string message) : base(message) { }
-
-        public override Notification FactoryNotification()
-        {
-            return new EmailNotification(_message);
-        }
 
         public override void Notify()
         {
@@ -55,10 +93,6 @@ namespace NotificationSystem
         {
             Console.WriteLine("SMS sent: " + _message);
         }
-        public override Notification FactoryNotification()
-        {
-            return new SmsNotification(_message);
-        }
     }
 
     // Конкретное уведомление: Push
@@ -70,18 +104,14 @@ namespace NotificationSystem
         {
             Console.WriteLine("Push notification sent: " + _message);
         }
-        public override Notification FactoryNotification()
-        {
-            return new PushNotification(_message);
-        }
     }
 
     // Сервис уведомлений 
-    class NotificationService
+    public class NotificationService
     {
-        public void SendNotification(Notification notification)
+        public void SendNotification(FactoryNotification factoryNotification)
         {
-            notification.FactoryNotification().Notify();
+            factoryNotification.FabricMethodNotification().Notify();
         }
     }
 
@@ -90,16 +120,16 @@ namespace NotificationSystem
         static void Main(string[] args)
         {
             // Пример использования сервиса уведомлений
-            NotificationService service = new NotificationService();
+            NotificationService service = new ();
 
             // Отправляем Email-уведомление
-            service.SendNotification(new EmailNotification("Your order has been shipped."));
+            service.SendNotification(new CreateEmailNotification("Your order has been shipped."));
 
             // Отправляем SMS-уведомление
-            service.SendNotification(new SmsNotification("Your verification code is 1234."));
+            service.SendNotification(new CreateSmsNotification("Your verification code is 1234."));
 
             // Отправляем Push-уведомление
-            service.SendNotification(new PushNotification("You have a new friend request."));
+            service.SendNotification(new CreatePushNotification("You have a new friend request."));
         }
     }
 }
