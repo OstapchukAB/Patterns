@@ -1,5 +1,7 @@
 ﻿namespace ProceduralExample
 {
+
+    // Абстрактный класс, представляющий автомобиль
     public abstract class Car
     {
         public string Model { get; set; }
@@ -14,17 +16,24 @@
                 Console.WriteLine($"Car model: {Model}");
         }
     }
-    public abstract class CreatorCar:IMessageCar
+
+    // Абстрактная фабрика для создания автомобилей
+    // Теперь используется один метод CreateCar с необязательным параметром.
+    public abstract class CarFactory:IMessageCar
     {
         public void DisplayInfo(string name)
         {
             Console.WriteLine($"Выпущен автомобиль:{name}");
         }
 
-        public abstract Car FactoryCar(string name);
-        public abstract Car FactoryCar();
+        // Метод создания автомобиля с необязательным параметром.
+        // Если имя не передано (null), каждая фабрика сама задаст значение по умолчанию.
+        public abstract Car FactoryCar(string? name=null);
+
 
     }
+
+    // Интерфейс для вывода сообщения о созданном автомобиле
     interface IMessageCar
     {
         void DisplayInfo(string name);
@@ -49,50 +58,31 @@
         }
     }
 
-    class CreatorSedan : CreatorCar
+    class CreatorSedan : CarFactory
     {
-        public override Car FactoryCar(string name)
+        public override Car FactoryCar(string? name=null)
         {
-            var car = new SedanCar(name);
+            
+            var car = new SedanCar(name ??"Sedan");
             DisplayInfo(car.Model);
             return car;
         }
 
-        public override Car FactoryCar()
+    }
+    class CreatorSuv : CarFactory
+    {
+        public override Car FactoryCar(string? name=null)
         {
-            var car = new SedanCar("Sedan");
+            var car= new SuvCar(name ?? "SUV");
             DisplayInfo(car.Model);
             return car;
         }
     }
-    class CreatorSuv : CreatorCar
+    class CreatorCoupe : CarFactory
     {
-        public override Car FactoryCar(string name)
+        public override Car FactoryCar(string? name=null)
         {
-            var car= new SuvCar(name);
-            DisplayInfo(car.Model);
-            return car;
-        }
-
-        public override Car FactoryCar()
-        {
-            var car = new SuvCar("SUV");
-            DisplayInfo(car.Model);
-            return car;
-        }
-    }
-    class CreatorCoupe : CreatorCar
-    {
-        public override Car FactoryCar(string name)
-        {
-            var car=new CoupeCar(name);
-            DisplayInfo(car.Model);
-            return car;
-        }
-
-        public override Car FactoryCar()
-        {
-            var car = new CoupeCar("Coupe");
+            var car=new CoupeCar(name ?? "Coupe" );
             DisplayInfo(car.Model);
             return car;
         }
@@ -101,17 +91,7 @@
     // Магазин автомобилей, где выбор и создание конкретного автомобиля осуществляется через условные операторы
     class CarStore
     {
-        public void SellCar(CreatorCar creator)
-        {
-            Car? car;
-            car = creator.FactoryCar();
-
-            if (car != null) 
-            { 
-                Console.WriteLine($"Автомобиль {car.Model} продан!");
-            }
-        }
-        public void SellCar(CreatorCar creator,string name)
+        public void SellCar(CarFactory creator,string? name =null)
         {
             Car? car;
             car = creator.FactoryCar(name);
@@ -128,7 +108,8 @@
         static void Main(string[] args)
         {
             CarStore store = new CarStore();
-            store.SellCar(new CreatorSuv(),"Suv2025");
+            store.SellCar(new CreatorSuv());
+            store.SellCar(new CreatorSedan());
         }
     }
 }
