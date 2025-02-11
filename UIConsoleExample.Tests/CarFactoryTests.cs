@@ -72,26 +72,26 @@ namespace UIConsoleExample.Tests
             Console.SetOut(_originalOutput);
         }
 
-        //[Fact]
-        //public void SellCar_WithProvidedName_ShouldPrintCorrectMessages()
-        //{
-        //    // Arrange
-        //    var store = new CarStore();
-        //    var factory = new CarFactory();
-        //    using var sw = new StringWriter();
-        //    Console.SetOut(sw);
+        [Fact]
+        public void SellCar_WithProvidedName_ShouldPrintCorrectMessages()
+        {
+            // Arrange
 
-        //    string providedName = "Suv2025";
+            var store = new CarStore();
+            var factory = new SuvFactory();
+            using var sw = new StringWriter();
+            Console.SetOut(sw);
+            string providedName = "Suv2025";
 
-        //    // Act
-        //    store.SellCar(factory, providedName);
+            // Act
+            store.SellCar(factory, providedName);
 
-        //    // Assert
-        //    // Фабрика выводит сообщение о выпуске автомобиля, затем магазин – сообщение о продаже
-        //    string expectedOutput = $"Выпущен автомобиль: {providedName}{Environment.NewLine}" +
-        //                            $"Автомобиль {providedName} продан!{Environment.NewLine}";
-        //    sw.ToString().Should().Be(expectedOutput);
-        //}
+            // Assert
+            // Фабрика выводит сообщение о выпуске автомобиля, затем магазин – сообщение о продаже
+            string expectedOutput = $"Выпущен автомобиль: {providedName}{Environment.NewLine}" +
+                                    $"Автомобиль {providedName} продан!{Environment.NewLine}";
+            sw.ToString().Should().Be(expectedOutput);
+        }
 
         [Fact]
         public void SellCar_WithoutProvidedName_ShouldPrintCorrectMessagesWithDefaultModel()

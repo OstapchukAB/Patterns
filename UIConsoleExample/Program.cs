@@ -23,7 +23,7 @@
     {
         public void DisplayInfo(string name)
         {
-            Console.WriteLine($"Выпущен автомобиль:{name}");
+            Console.WriteLine($"Выпущен автомобиль: {name}");
         }
 
         // Метод создания автомобиля с необязательным параметром.
