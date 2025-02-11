@@ -1,12 +1,21 @@
-﻿/*
- Краткое пояснение:
+﻿using System;
+/*
+ Сохранили каноническое применение "Фабричного метода"
 
-    NotificationService:
-    Метод SendNotification использует условные операторы для определения типа уведомления и создания соответствующего объекта.
-При добавлении нового типа уведомления (например, InAppNotification) потребуется изменить этот метод, что затрудняет масштабирование и сопровождение кода.
+    Вместо интерфейса INotificationFactory используется абстрактный класс NotificationFactory.
+    Теперь общее поведение (SendNotification) находится в базовом классе, а конкретные фабрики переопределяют CreateNotification().
 
-Этот код является отправной точкой для практики применения паттерна «Фабричный метод»,
-который позволит вынести логику создания объектов в отдельные классы (фабрики) и устранить множественные условия в NotificationService.
+Меньше кода в Program
+
+    Теперь не нужно передавать фабрику в NotificationService, а затем вручную вызывать Notify().
+    Достаточно вызвать SendNotification() у фабрики, и всё происходит автоматически.
+
+Инкапсуляция логики в фабриках
+
+    Логика создания объекта скрыта в фабрике.
+    SendNotification() теперь вызывает Notify() у созданного объекта.
+
+Теперь код чётко следует паттерну "Фабричный метод", без избыточности интерфейсов. 
  */
 namespace NotificationSystem
 {
@@ -15,103 +24,97 @@ namespace NotificationSystem
     {
         protected readonly string _message;
 
-        public Notification(string message)
+        protected Notification(string message)
         {
             _message = message;
         }
 
         // Метод для отправки уведомления
-        public virtual void Notify()
-        {
-            Console.WriteLine("Notification: " + _message);
-
-        }
-
+        public abstract void Notify();
     }
 
-    public abstract class FactoryNotification
+    // Конкретные классы уведомлений
+    public class EmailNotification : Notification
     {
-        public abstract Notification FabricMethodNotification();
-    }
+        private readonly string _subject;
 
-    public class CreateEmailNotification : FactoryNotification
-    {
-        readonly string _message;
-        public CreateEmailNotification(string message)
+        public EmailNotification(string message, string subject) : base(message)
         {
-            _message = message;
+            _subject = subject;
         }
-
-        public override Notification FabricMethodNotification()
-        {
-            return new EmailNotification(_message);
-        }
-    }
-    public class CreateSmsNotification : FactoryNotification
-    {
-        readonly string _message;
-        public CreateSmsNotification(string message)
-        {
-            _message = message;
-        }
-        public override Notification FabricMethodNotification()
-        {
-            return new SmsNotification(_message);
-        }
-    }
-
-    public class CreatePushNotification : FactoryNotification
-    {
-        readonly string _message;
-        public CreatePushNotification(string message)
-        {
-            _message = message;
-        }
-        public override Notification FabricMethodNotification()
-        {
-            return new PushNotification(_message);
-        }
-    }
-
-    // Конкретное уведомление: Email
-    class EmailNotification : Notification
-    {
-        public EmailNotification(string message) : base(message) { }
 
         public override void Notify()
         {
-            Console.WriteLine("Email sent: " + _message);
+            Console.WriteLine($"Email sent: Subject: {_subject}, Message: {_message}");
         }
     }
 
-    // Конкретное уведомление: SMS
-    class SmsNotification : Notification
+    public class SmsNotification : Notification
     {
-        public SmsNotification(string message) : base(message) { }
+        private readonly string _sender;
+
+        public SmsNotification(string message, string sender) : base(message)
+        {
+            _sender = sender;
+        }
 
         public override void Notify()
         {
-            Console.WriteLine("SMS sent: " + _message);
+            Console.WriteLine($"SMS sent from {_sender}: {_message}");
         }
     }
 
-    // Конкретное уведомление: Push
-    class PushNotification : Notification
+    public class PushNotification : Notification
     {
-        public PushNotification(string message) : base(message) { }
+        private readonly int _priority;
+
+        public PushNotification(string message, int priority) : base(message)
+        {
+            _priority = priority;
+        }
 
         public override void Notify()
         {
-            Console.WriteLine("Push notification sent: " + _message);
+            Console.WriteLine($"Push notification sent [Priority: {_priority}]: {_message}");
         }
     }
 
-    // Сервис уведомлений 
-    public class NotificationService
+    // Абстрактный класс фабрики
+    public abstract class NotificationFactory
     {
-        public void SendNotification(FactoryNotification factoryNotification)
+        public abstract Notification CreateNotification(string message);
+
+        public void SendNotification(string message)
         {
-            factoryNotification.FabricMethodNotification().Notify();
+            var notification = CreateNotification(message);
+            notification.Notify();
+        }
+    }
+
+    // Фабрика Email-уведомлений
+    public class EmailNotificationFactory : NotificationFactory
+    {
+        public override Notification CreateNotification(string message)
+        {
+            return new EmailNotification(message, "Important Notice");
+        }
+    }
+
+    // Фабрика SMS-уведомлений
+    public class SmsNotificationFactory : NotificationFactory
+    {
+        public override Notification CreateNotification(string message)
+        {
+            return new SmsNotification(message, "Service123");
+        }
+    }
+
+    // Фабрика Push-уведомлений
+    public class PushNotificationFactory : NotificationFactory
+    {
+        public override Notification CreateNotification(string message)
+        {
+            return new PushNotification(message, priority: 1);
         }
     }
 
@@ -119,17 +122,15 @@ namespace NotificationSystem
     {
         static void Main(string[] args)
         {
-            // Пример использования сервиса уведомлений
-            NotificationService service = new ();
+            // Создаём фабрики
+            NotificationFactory emailFactory = new EmailNotificationFactory();
+            NotificationFactory smsFactory = new SmsNotificationFactory();
+            NotificationFactory pushFactory = new PushNotificationFactory();
 
-            // Отправляем Email-уведомление
-            service.SendNotification(new CreateEmailNotification("Your order has been shipped."));
-
-            // Отправляем SMS-уведомление
-            service.SendNotification(new CreateSmsNotification("Your verification code is 1234."));
-
-            // Отправляем Push-уведомление
-            service.SendNotification(new CreatePushNotification("You have a new friend request."));
+            // Используем метод SendNotification(), который инкапсулирует создание и отправку уведомления
+            emailFactory.SendNotification("Your order has been shipped.");
+            smsFactory.SendNotification("Your verification code is 1234.");
+            pushFactory.SendNotification("You have a new friend request.");
         }
     }
 }
