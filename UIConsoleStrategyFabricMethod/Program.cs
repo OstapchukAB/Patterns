@@ -184,26 +184,26 @@ namespace StrategyFactoryExample
 
     class Program
     {
-        static void Main()
-        {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
+        //static void Main()
+        //{
+        //    Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            Console.WriteLine("Введите стоимость товара:");
-            decimal price = decimal.Parse(Console.ReadLine());
+        //    Console.WriteLine("Введите стоимость товара:");
+        //    decimal price = decimal.Parse(Console.ReadLine());
 
-            Console.WriteLine("Выберите тип скидки: percentage, fixed, none");
-            string discountType = Console.ReadLine();
+        //    Console.WriteLine("Выберите тип скидки: percentage, fixed, none");
+        //    string discountType = Console.ReadLine();
 
-            // Используем фабричный метод для получения стратегии скидки.
-            IStrategy strategy = DiscountFactory.CreateDiscount(discountType);
+        //    // Используем фабричный метод для получения стратегии скидки.
+        //    IStrategy strategy = DiscountFactory.CreateDiscount(discountType);
 
-            // Создаём контекст с выбранной стратегией.
-            DiscountCalculatorContext calculator = new(strategy);
+        //    // Создаём контекст с выбранной стратегией.
+        //    DiscountCalculatorContext calculator = new(strategy);
 
-            // Рассчитываем итоговую цену.
-            decimal finalPrice = calculator.CalculateFinalPrice(price);
+        //    // Рассчитываем итоговую цену.
+        //    decimal finalPrice = calculator.CalculateFinalPrice(price);
 
-            Console.WriteLine($"Итоговая цена с учётом скидки: {finalPrice:C}");
-        }
+        //    Console.WriteLine($"Итоговая цена с учётом скидки: {finalPrice:C}");
+        //}
     }
 }
