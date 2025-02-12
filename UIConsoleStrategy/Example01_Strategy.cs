@@ -90,7 +90,7 @@ public class DiscountNone : IStrategy
 }
 
 // Класс для вычисления скидки в процедурном стиле
-public class DiscountCalculatorContext:IAmount
+public class DiscountCalculatorContext
 {
 
     IStrategy _strategy;
@@ -112,10 +112,6 @@ public class DiscountCalculatorContext:IAmount
 
 }
 
-public interface IAmount
-{
-    decimal CalculateAmount(decimal amount);
-}
 
 class Program
 {
