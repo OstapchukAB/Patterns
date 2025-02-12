@@ -21,7 +21,7 @@ namespace TravelCardes;
 
  */
 #endregion
-public interface IStrategy
+public interface IFareStrategy
 {
     public decimal ExecuteStrategy(int numberOfTripsPerMonth);
 
@@ -68,7 +68,7 @@ public abstract class Fare
     public string Comment { get; set; } = "";
 }
 
-public class FixFare : Fare, IStrategy
+public class FixFare : Fare, IFareStrategy
 {
     public FixFare()
     {
@@ -81,7 +81,7 @@ public class FixFare : Fare, IStrategy
         return NumberOfTripsPerMonth * UnitCost;
     }
 }
-public class StudentFare : Fare, IStrategy
+public class StudentFare : Fare, IFareStrategy
 {
     public StudentFare()
     {
@@ -95,7 +95,7 @@ public class StudentFare : Fare, IStrategy
     }
 }
 
-public class TravelTicketFare : Fare, IStrategy
+public class TravelTicketFare : Fare, IFareStrategy
 {
 
     public TravelTicketFare()
@@ -107,20 +107,21 @@ public class TravelTicketFare : Fare, IStrategy
 
     public decimal ExecuteStrategy(int numberOfTripsPerMonth)
     {
+        NumberOfTripsPerMonth = numberOfTripsPerMonth;
         return UnitCost;
     }
 }
 
 public class FareCalculatorContext
 {
-    public IStrategy _strategy;
+    public IFareStrategy _strategy;
 
-    public FareCalculatorContext(IStrategy strategy)
+    public FareCalculatorContext(IFareStrategy strategy)
     {
         _strategy = strategy;
     }
 
-    public void SetStrategy(IStrategy strategy)
+    public void SetStrategy(IFareStrategy strategy)
     {
         _strategy = strategy;
     }
@@ -136,48 +137,49 @@ public class Program
     public static void Main()
     {
 
+        // Настройка кодировки для корректного отображения символов в консоли.
         Console.OutputEncoding = Encoding.UTF8;
 
-        Console.WriteLine("Выберите тариф: FixPrice - 1 Sudent - 2 TravelTicket - 3");
-        var tariff = int.Parse(Console.ReadLine());
-        Console.WriteLine("Выберите количество поездок в месяц");
-        var numberOfTripsPerMonth = int.Parse(Console.ReadLine());
+        Console.WriteLine("Выберите тариф: FixFare - 1, StudentFare - 2, TravelTicketFare - 3");
+        int tariff = int.Parse(Console.ReadLine() ?? "0");
+        Console.WriteLine("Введите количество поездок в месяц:");
+        int numberOfTrips = int.Parse(Console.ReadLine() ?? "0");
 
-        Fare fare;
-        FareCalculatorContext calculator;
-        switch (tariff)
+        FareCalculatorContext? calculator = tariff switch
         {
-            case 1:
-                Console.WriteLine("FIX");
-                fare = new FixFare();
-                calculator = new((FixFare)fare);
-                Console.WriteLine("FixPrice. Unit Cost: {0:C}  Number of trips per month: {1}  Total Cost: {2:C}",
-                    ((Fare)calculator._strategy).UnitCost, numberOfTripsPerMonth,
-                    calculator.GetTotalCost(numberOfTripsPerMonth));
-                break;
+            1 => new (new FixFare()),
+            2 => new (new StudentFare()),
+            3 => new (new TravelTicketFare()),
+            _ => null
+        };
 
-            case 2:
-                Console.WriteLine("STUDENT");
-                fare = new StudentFare();
-                calculator = new((StudentFare)fare);
-                Console.WriteLine("Student. Unit Cost: {0:C}  Number of trips per month: {1}  Total Cost: {2:C}", ((Fare)calculator._strategy).UnitCost, numberOfTripsPerMonth, calculator.GetTotalCost(numberOfTripsPerMonth));
-                break;
+        if (calculator == null)
+        {
+            Console.WriteLine("Нет такого тарифа");
+            return;
+        }
 
-            case 3:
-                Console.WriteLine("TRAVEL");
-                fare = new TravelTicketFare();
-                calculator = new((TravelTicketFare)fare);
-                Console.WriteLine("TravelTicket. Unit Cost: {0:C}  Number of trips per month: {1}  Total Cost: {2:C} Comment {3}",
-                    ((Fare)calculator._strategy).UnitCost,
-                    numberOfTripsPerMonth,
-                    calculator.GetTotalCost(numberOfTripsPerMonth),
-                    fare.Comment
-                    );
-                break;
+        decimal totalCost = calculator.GetTotalCost(numberOfTrips);
 
-            default:
-                Console.WriteLine("нет такого тарифа");
-                break;
+        // Вывод результатов с использованием стратегии.
+        if (tariff == 3)
+        {
+            // Для проездного билета выводим также комментарий
+            TravelTicketFare ticketFare = (TravelTicketFare)calculator._strategy;
+            Console.WriteLine("TravelTicketFare: Unit Cost: {0:C}, Количество поездок: {1}, Общая стоимость: {2:C}. {3}",
+                ticketFare.UnitCost, numberOfTrips, totalCost, ticketFare.Comment);
+        }
+        else if (tariff == 1)
+        {
+            FixFare fixFare = (FixFare)calculator._strategy;
+            Console.WriteLine("FixFare: Unit Cost: {0:C}, Количество поездок: {1}, Общая стоимость: {2:C}",
+                fixFare.UnitCost, numberOfTrips, totalCost);
+        }
+        else if (tariff == 2)
+        {
+            StudentFare studentFare = (StudentFare)calculator._strategy;
+            Console.WriteLine("StudentFare: Unit Cost: {0:C}, Количество поездок: {1}, Общая стоимость: {2:C}",
+                studentFare.UnitCost, numberOfTrips, totalCost);
         }
     }
 }
