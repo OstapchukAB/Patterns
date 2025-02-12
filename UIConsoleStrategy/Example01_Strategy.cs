@@ -113,35 +113,35 @@ public class DiscountCalculatorContext
 }
 
 
-class Program
+public class Program
 {
-    static void Main(string[] args)
-    {
-        // Устанавливаем кодировку консоли на UTF-8 для корректного отображения Unicode символов
-        Console.OutputEncoding = Encoding.UTF8;
-        // Устанавливаем русскую культуру для текущего потока
-        Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
-        Thread.CurrentThread.CurrentUICulture = new CultureInfo("ru-RU");
+    //public static void Main(string[] args)
+    //{
+    //    // Устанавливаем кодировку консоли на UTF-8 для корректного отображения Unicode символов
+    //    Console.OutputEncoding = Encoding.UTF8;
+    //    // Устанавливаем русскую культуру для текущего потока
+    //    Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
+    //    Thread.CurrentThread.CurrentUICulture = new CultureInfo("ru-RU");
         
-        decimal originalAmount = 100.00m;
+    //    decimal originalAmount = 100.00m;
         
-        DiscountCalculatorContext calculator = new(new DiscountNone());
-        var amount=calculator.CalculateAmount(originalAmount);
-        Console.WriteLine("None discount: {0:C}", amount);
+    //    DiscountCalculatorContext calculator = new(new DiscountNone());
+    //    var amount=calculator.CalculateAmount(originalAmount);
+    //    Console.WriteLine("None discount: {0:C}", amount);
 
-        calculator.SetStrategy(new DiscountSeasonal());
-        amount = calculator.CalculateAmount(originalAmount);
-        Console.WriteLine("Seasonal discount: {0:c}",amount);
+    //    calculator.SetStrategy(new DiscountSeasonal());
+    //    amount = calculator.CalculateAmount(originalAmount);
+    //    Console.WriteLine("Seasonal discount: {0:c}",amount);
 
-        calculator.SetStrategy(new DiscountClearance());
-        amount = calculator.CalculateAmount(originalAmount);
-        Console.WriteLine("Clearance discount: {0:c}",amount);
+    //    calculator.SetStrategy(new DiscountClearance());
+    //    amount = calculator.CalculateAmount(originalAmount);
+    //    Console.WriteLine("Clearance discount: {0:c}",amount);
 
-        calculator.SetStrategy(new DiscountLoyalty());
-        amount = calculator.CalculateAmount(originalAmount);
-        Console.WriteLine("Loyalty discount: {0:c}",amount);
+    //    calculator.SetStrategy(new DiscountLoyalty());
+    //    amount = calculator.CalculateAmount(originalAmount);
+    //    Console.WriteLine("Loyalty discount: {0:c}",amount);
 
-    }
+    //}
 }
 
 
