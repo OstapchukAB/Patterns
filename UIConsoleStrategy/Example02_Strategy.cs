@@ -29,7 +29,42 @@ public interface IStrategy
 
 public abstract class Fare
 {
-    public decimal UnitCost { get; protected set; }
+    protected bool Unlimited=false;
+    int _numberOfTripsPerMonth;
+    public int NumberOfTripsPerMonth
+    {
+        get => _numberOfTripsPerMonth;
+        protected set
+        {
+            if (value >= 0)
+            {
+                _numberOfTripsPerMonth = value;
+            }
+            else
+            {
+                throw new InvalidOperationException("количество поездок не может быть отрицательным");
+            }
+        }
+    }
+
+
+    decimal _unitCost;
+    public decimal UnitCost
+    {
+        get => _unitCost;
+        protected set 
+        {
+            if (value >= 0) 
+            { 
+                _unitCost = value;
+            }
+            else
+            {
+                throw new InvalidOperationException("стоимость не может быть отрицательная");
+            }
+        }
+    
+    }
     public string Comment { get; set; } = "";
 }
 
@@ -42,19 +77,21 @@ public class FixFare : Fare, IStrategy
 
     public decimal ExecuteStrategy(int numberOfTripsPerMonth)
     {
-        return numberOfTripsPerMonth* UnitCost;
+        NumberOfTripsPerMonth = numberOfTripsPerMonth;
+        return NumberOfTripsPerMonth * UnitCost;
     }
 }
 public class StudentFare : Fare, IStrategy
 {
     public StudentFare()
     {
-        UnitCost= new FixFare().ExecuteStrategy(1) * 0.7m;
+        UnitCost = new FixFare().ExecuteStrategy(1) * 0.7m;
     }
 
     public decimal ExecuteStrategy(int numberOfTripsPerMonth)
-    {        
-        return  numberOfTripsPerMonth * UnitCost;
+    {
+        NumberOfTripsPerMonth = numberOfTripsPerMonth;
+        return NumberOfTripsPerMonth * UnitCost;
     }
 }
 
@@ -63,8 +100,9 @@ public class TravelTicketFare : Fare, IStrategy
 
     public TravelTicketFare()
     {
-       UnitCost = 2000m;
-       Comment = "The cost of each trip during the month is free of chage";
+        Unlimited=true;
+        UnitCost = 2000m;
+        Comment = "The cost of each trip during the month is free of chage";
     }
 
     public decimal ExecuteStrategy(int numberOfTripsPerMonth)
@@ -88,7 +126,8 @@ public class FareCalculatorContext
     }
     public decimal GetTotalCost(int numberOfTripsPerMonth)
     {
-        return _strategy.ExecuteStrategy(numberOfTripsPerMonth);
+        
+        return _strategy.ExecuteStrategy(numberOfTripsPerMonth == 0 ?1: numberOfTripsPerMonth);
     }
 }
 
@@ -99,32 +138,32 @@ public class Program
 
         Console.OutputEncoding = Encoding.UTF8;
 
-        Console.WriteLine("Выберите тариф: FixPrice - 0 Sudent - 1 TravelTicket - 3");
-        var tariff=int.Parse(Console.ReadLine());
+        Console.WriteLine("Выберите тариф: FixPrice - 1 Sudent - 2 TravelTicket - 3");
+        var tariff = int.Parse(Console.ReadLine());
         Console.WriteLine("Выберите количество поездок в месяц");
-        var numberOfTripsPerMonth=int.Parse(Console.ReadLine());
+        var numberOfTripsPerMonth = int.Parse(Console.ReadLine());
 
         Fare fare;
         FareCalculatorContext calculator;
         switch (tariff)
         {
-            case 0:
+            case 1:
                 Console.WriteLine("FIX");
                 fare = new FixFare();
-                calculator = new ((FixFare)fare);
+                calculator = new((FixFare)fare);
                 Console.WriteLine("FixPrice. Unit Cost: {0:C}  Number of trips per month: {1}  Total Cost: {2:C}",
                     ((Fare)calculator._strategy).UnitCost, numberOfTripsPerMonth,
                     calculator.GetTotalCost(numberOfTripsPerMonth));
                 break;
-            
-            case 1:
+
+            case 2:
                 Console.WriteLine("STUDENT");
                 fare = new StudentFare();
                 calculator = new((StudentFare)fare);
                 Console.WriteLine("Student. Unit Cost: {0:C}  Number of trips per month: {1}  Total Cost: {2:C}", ((Fare)calculator._strategy).UnitCost, numberOfTripsPerMonth, calculator.GetTotalCost(numberOfTripsPerMonth));
-                break ;
+                break;
 
-                case 2:
+            case 3:
                 Console.WriteLine("TRAVEL");
                 fare = new TravelTicketFare();
                 calculator = new((TravelTicketFare)fare);
@@ -142,11 +181,11 @@ public class Program
         }
 
 
-       
 
-        
 
-       
+
+
+
 
 
     }
