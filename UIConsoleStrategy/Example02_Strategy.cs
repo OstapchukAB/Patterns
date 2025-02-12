@@ -179,15 +179,6 @@ public class Program
                 Console.WriteLine("нет такого тарифа");
                 break;
         }
-
-
-
-
-
-
-
-
-
     }
 }
 
