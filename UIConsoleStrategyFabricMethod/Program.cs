@@ -55,6 +55,37 @@
 что является одной из целей паттерна «Фабричный метод».
  */
 #endregion
+#region Рекомендуемая структура решения
+/*
+ DiscountSolution.sln
+│
+├── Discount.Core
+│   ├── Strategies
+│   │   ├── IDiscountStrategy.cs          // Интерфейс для стратегии скидки
+│   │   ├── FixedDiscount.cs                // Конкретная стратегия: фиксированная скидка
+│   │   ├── PercentageDiscount.cs           // Конкретная стратегия: процентная скидка
+│   │   └── NoDiscount.cs                   // Конкретная стратегия: без скидки
+│   │
+│   ├── Factories
+│   │   ├── DiscountCreator.cs              // Абстрактный класс-фабрика (Creator)
+│   │   ├── FixedDiscountCreator.cs         // Конкретный создатель для FixedDiscount
+│   │   ├── PercentageDiscountCreator.cs    // Конкретный создатель для PercentageDiscount
+│   │   └── NoDiscountCreator.cs            // Конкретный создатель для NoDiscount
+│   │
+│   ├── Contexts
+│   │   └── DiscountCalculatorContext.cs    // Контекст, использующий стратегию (через фабричный метод)
+│   │
+│   └── Models
+│       └── (Дополнительные классы, если нужны для представления данных)
+│
+├── Discount.ConsoleApp
+│   └── Program.cs                          // Консольное приложение, демонстрирующее работу паттернов
+│
+└── Discount.Tests
+    └── (Юнит-тесты для проверки работы стратегий, фабрик и контекста)
+
+ */
+#endregion
 namespace StrategyFactoryExample
 {
     /// <summary>
