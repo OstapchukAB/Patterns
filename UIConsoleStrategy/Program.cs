@@ -12,6 +12,39 @@ Context: Класс, который содержит ссылку на теку�
 который используется для решения задачи, без изменения его собственного кода.
  */
 #endregion
+#region UML-schema
+/*
+             +---------------------+
+            |      Context        |
+            |---------------------|
+            | - strategy: Strategy|
+            |---------------------|
+            | + Context(strategy: Strategy)  |
+            | + setStrategy(strategy: Strategy)|
+            | + executeStrategy()              |
+            +---------------------+
+                      |
+                      |  использует
+                      V
+            +---------------------+
+            |     <<interface>>   |
+            |      Strategy       |
+            |---------------------|
+            | + execute()         |
+            +---------------------+
+                      ^
+                      |
+       ---------------------------------
+       |               |               |
++--------------+ +--------------+ +--------------+
+| ConcreteStrategyA| |ConcreteStrategyB| |ConcreteStrategyC|
+|------------------| |-----------------| |-----------------|
+| + execute()      | | + execute()     | | + execute()     |
++--------------+ +--------------+ +--------------+
+
+ 
+ */
+#endregion
 namespace StrategyPatternExample
 {
     // Интерфейс стратегии
@@ -71,21 +104,21 @@ namespace StrategyPatternExample
         }
     }
 
-    public static class Program
-    {
-        public static void Main(string[] args)
-        {
-            // Инициализация контекста с ConcreteStrategyA
-            Context context = new Context(new ConcreteStrategyA());
-            context.ExecuteStrategy();  // Вывод: Executing strategy A: Быстрое выполнение алгоритма A.
+    //public static class Program
+    //{
+    //    public static void Main(string[] args)
+    //    {
+    //        // Инициализация контекста с ConcreteStrategyA
+    //        Context context = new Context(new ConcreteStrategyA());
+    //        context.ExecuteStrategy();  // Вывод: Executing strategy A: Быстрое выполнение алгоритма A.
 
-            // Замена стратегии на ConcreteStrategyB
-            context.SetStrategy(new ConcreteStrategyB());
-            context.ExecuteStrategy();  // Вывод: Executing strategy B: Надёжное выполнение алгоритма B.
+    //        // Замена стратегии на ConcreteStrategyB
+    //        context.SetStrategy(new ConcreteStrategyB());
+    //        context.ExecuteStrategy();  // Вывод: Executing strategy B: Надёжное выполнение алгоритма B.
 
-            // Замена стратегии на ConcreteStrategyC
-            context.SetStrategy(new ConcreteStrategyC());
-            context.ExecuteStrategy();  // Вывод: Executing strategy C: Экономичное выполнение алгоритма C.
-        }
-    }
+    //        // Замена стратегии на ConcreteStrategyC
+    //        context.SetStrategy(new ConcreteStrategyC());
+    //        context.ExecuteStrategy();  // Вывод: Executing strategy C: Экономичное выполнение алгоритма C.
+    //    }
+    //}
 }

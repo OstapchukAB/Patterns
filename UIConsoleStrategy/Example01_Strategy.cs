@@ -60,49 +60,91 @@
  */
 #endregion
 
-namespace DiscountExample
+namespace DiscountExample;
+
+
+public interface IStrategy
 {
-    // Класс для вычисления скидки в процедурном стиле
-    public class DiscountCalculator
+    decimal CalculateDiscount();
+}
+
+public class DiscountSeasonal : IStrategy
+{
+   public decimal CalculateDiscount() => 0.9m;
+   
+}
+public class DiscountClearance : IStrategy
+{
+    public decimal CalculateDiscount() => 0.8m;
+}
+public class DiscountLoyalty : IStrategy
+{
+    public decimal CalculateDiscount() => 0.85m;
+}
+public class DiscountNone : IStrategy
+{
+    public decimal CalculateDiscount() => 1;
+}
+
+// Класс для вычисления скидки в процедурном стиле
+public class DiscountCalculatorContext:IAmount
+{
+
+    IStrategy _strategy;
+    decimal _discount;
+    public DiscountCalculatorContext(IStrategy strategy)
     {
-        public double CalculateDiscount(string discountType, double amount)
-        {
-            // Процедурный код с условными операторами для вычисления итоговой суммы с учётом скидки
-            if (discountType == "None")
-            {
-                return amount;
-            }
-            else if (discountType == "Seasonal")
-            {
-                return amount * 0.9; // скидка 10%
-            }
-            else if (discountType == "Clearance")
-            {
-                return amount * 0.8; // скидка 20%
-            }
-            else if (discountType == "Loyalty")
-            {
-                return amount * 0.85; // скидка 15%
-            }
-            else
-            {
-                throw new ArgumentException("Unknown discount type");
-            }
-        }
+        _strategy = strategy;
     }
 
-    class Program
+    public decimal CalculateAmount(decimal amount)
     {
-        static void Main(string[] args)
-        {
-            DiscountCalculator calculator = new DiscountCalculator();
-            double originalAmount = 100.0;
+        return _discount * amount;
+    }
 
-            Console.WriteLine("None discount: " + calculator.CalculateDiscount("None", originalAmount));
-            Console.WriteLine("Seasonal discount: " + calculator.CalculateDiscount("Seasonal", originalAmount));
-            Console.WriteLine("Clearance discount: " + calculator.CalculateDiscount("Clearance", originalAmount));
-            Console.WriteLine("Loyalty discount: " + calculator.CalculateDiscount("Loyalty", originalAmount));
-        }
+    public void ExecuteStrategy()
+    {
+        _discount= _strategy.CalculateDiscount();
+    }
+    public void SetStrategy(IStrategy strategy)
+    {
+        _strategy = strategy;
+    }
+
+}
+
+public interface IAmount
+{
+    decimal CalculateAmount(decimal amount);
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        
+        decimal originalAmount = 100.00m;
+        
+        DiscountCalculatorContext calculator = new(new DiscountNone());
+        calculator.ExecuteStrategy();
+        var amount=calculator.CalculateAmount(originalAmount);
+        Console.WriteLine("None discount: {0}", amount);
+
+        calculator.SetStrategy(new DiscountSeasonal());
+        calculator.ExecuteStrategy();
+        amount = calculator.CalculateAmount(originalAmount);
+        Console.WriteLine("Seasonal discount: {0}",amount);
+
+        calculator.SetStrategy(new DiscountClearance());
+        calculator.ExecuteStrategy();
+        amount = calculator.CalculateAmount(originalAmount);
+        Console.WriteLine("Clearance discount: {0}",amount);
+
+        calculator.SetStrategy(new DiscountLoyalty());
+        calculator.ExecuteStrategy();
+        amount = calculator.CalculateAmount(originalAmount);
+        Console.WriteLine("Loyalty discount: {0}",amount);
+
     }
 }
 
