@@ -60,6 +60,9 @@
  */
 #endregion
 
+using System.Globalization;
+using System.Text;
+
 namespace DiscountExample;
 
 
@@ -91,7 +94,7 @@ public class DiscountCalculatorContext:IAmount
 {
 
     IStrategy _strategy;
-    decimal _discount;
+
     public DiscountCalculatorContext(IStrategy strategy)
     {
         _strategy = strategy;
@@ -99,13 +102,9 @@ public class DiscountCalculatorContext:IAmount
 
     public decimal CalculateAmount(decimal amount)
     {
-        return _discount * amount;
+        return _strategy.CalculateDiscount()*  amount;
     }
 
-    public void ExecuteStrategy()
-    {
-        _discount= _strategy.CalculateDiscount();
-    }
     public void SetStrategy(IStrategy strategy)
     {
         _strategy = strategy;
@@ -122,28 +121,29 @@ class Program
 {
     static void Main(string[] args)
     {
+        // Устанавливаем кодировку консоли на UTF-8 для корректного отображения Unicode символов
+        Console.OutputEncoding = Encoding.UTF8;
+        // Устанавливаем русскую культуру для текущего потока
+        Thread.CurrentThread.CurrentCulture = new CultureInfo("ru-RU");
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo("ru-RU");
         
         decimal originalAmount = 100.00m;
         
         DiscountCalculatorContext calculator = new(new DiscountNone());
-        calculator.ExecuteStrategy();
         var amount=calculator.CalculateAmount(originalAmount);
-        Console.WriteLine("None discount: {0}", amount);
+        Console.WriteLine("None discount: {0:C}", amount);
 
         calculator.SetStrategy(new DiscountSeasonal());
-        calculator.ExecuteStrategy();
         amount = calculator.CalculateAmount(originalAmount);
-        Console.WriteLine("Seasonal discount: {0}",amount);
+        Console.WriteLine("Seasonal discount: {0:c}",amount);
 
         calculator.SetStrategy(new DiscountClearance());
-        calculator.ExecuteStrategy();
         amount = calculator.CalculateAmount(originalAmount);
-        Console.WriteLine("Clearance discount: {0}",amount);
+        Console.WriteLine("Clearance discount: {0:c}",amount);
 
         calculator.SetStrategy(new DiscountLoyalty());
-        calculator.ExecuteStrategy();
         amount = calculator.CalculateAmount(originalAmount);
-        Console.WriteLine("Loyalty discount: {0}",amount);
+        Console.WriteLine("Loyalty discount: {0:c}",amount);
 
     }
 }
