@@ -1,8 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-
-#region Описание
+﻿#region Описание
 /*
 пример процедурного (антипаттерн) кода для обработки файлов. 
 В этом примере метод ProcessFile выполняет все действия – определяет тип файла по расширению,
@@ -27,111 +23,129 @@ using System.Linq;
 Стратегия (для инкапсуляции алгоритмов обработки),
 что позволит добиться более гибкого и расширяемого решения.
 
-*/ 
+*/
 #endregion
-namespace FileProcessingPattern
+namespace FileProcessingPattern;
+
+
+public interface IFileProcessingStrategy
 {
- 
-    public interface IStrategy
-    {
-        void ProcesseFile(string filePath);
-    }
+    void ProcessFile(string filePath);
+}
 
-    public class ProcessTxtFile : IStrategy
+public class ProcessTxtFile : IFileProcessingStrategy
+{
+    public void ProcessFile(string filePath)
     {
-        public void ProcesseFile(string filePath)
+        // Обработка текстового файла: подсчёт количества строк.
+        string[] lines = File.ReadAllLines(filePath);
+        Console.WriteLine("Текстовый файл содержит {0} строк.", lines.Length);
+    }
+}
+public class ProcessCsvFile : IFileProcessingStrategy
+{
+    public void ProcessFile(string filePath)
+    {
+        // Обработка CSV-файла: подсчёт количества столбцов в первой строке.
+        string[] lines = File.ReadAllLines(filePath);
+        if (lines.Length > 0)
         {
-            // Обработка текстового файла: подсчёт количества строк.
-            string[] lines = File.ReadAllLines(filePath);
-            Console.WriteLine("Текстовый файл содержит {0} строк.", lines.Length);
+            string[] columns = lines[0].Split(';');
+            Console.WriteLine("CSV-файл содержит {0} столбцов.", columns.Length);
+        }
+        else
+        {
+            Console.WriteLine("CSV-файл пуст.");
         }
     }
-    public class ProcessCsvFile : IStrategy
+}
+public class ProcessJsonFile : IFileProcessingStrategy
+{
+    public void ProcessFile(string filePath)
     {
-        public void ProcesseFile(string filePath)
-        {
-            // Обработка CSV-файла: подсчёт количества столбцов в первой строке.
-            string[] lines = File.ReadAllLines(filePath);
-            if (lines.Length > 0)
-            {
-                string[] columns = lines[0].Split(';');
-                Console.WriteLine("CSV-файл содержит {0} столбцов.", columns.Length);
-            }
-            else
-            {
-                Console.WriteLine("CSV-файл пуст.");
-            }
-        }
+        // Обработка JSON-файла: приближённый подсчёт объектов.
+        // (Наивный способ – подсчитываем количество символов '{'.)
+        string jsonContent = File.ReadAllText(filePath);
+        int objectCount = jsonContent.Count(ch => ch == '{');
+        Console.WriteLine("JSON-файл содержит приблизительно {0} объектов.", objectCount);
     }
-    public class ProcessJsonFile : IStrategy
+}
+
+/// <summary>
+/// Специальная стратегия, которая применяется, если тип файла не поддерживается.
+/// При вызове метода ProcessFile выводится сообщение об ошибке.
+/// </summary>
+public class UnsupportedFileProcessingStrategy : IFileProcessingStrategy
+{
+    private readonly string _extension;
+
+    public UnsupportedFileProcessingStrategy(string extension)
     {
-        public void ProcesseFile(string filePath)
-        {
-            // Обработка JSON-файла: приближённый подсчёт объектов.
-            // (Наивный способ – подсчитываем количество символов '{'.)
-            string jsonContent = File.ReadAllText(filePath);
-            int objectCount = jsonContent.Count(ch => ch == '{');
-            Console.WriteLine("JSON-файл содержит приблизительно {0} объектов.", objectCount);
-        }
+        _extension = extension;
     }
 
-    public class ContextProcessFile
+    public void ProcessFile(string filePath)
     {
-        private IStrategy _strategy;
-        public ContextProcessFile(IStrategy strategy)
-        {
-            _strategy = strategy;
-        }
-        public void ProcessFile(string filePath)
-        {
-            _strategy.ProcesseFile(filePath);
-        }
+        Console.WriteLine("Обработка файла с расширением '{0}' не поддерживается.", _extension);
     }
+}
 
-    //Простая фабрика получения нужной стратегии
-    public static class FabricStrategyProcessFile
+public class ContextProcessFile
+{
+    private IFileProcessingStrategy _strategy;
+    public ContextProcessFile(IFileProcessingStrategy strategy)
     {
-        public static IStrategy? CreateStrategy(string filePath)
+        _strategy = strategy;
+    }
+    public void ProcessFile(string filePath)
+    {
+        _strategy.ProcessFile(filePath);
+    }
+}
+
+//Простая фабрика получения нужной стратегии
+public static class FabricStrategyProcessFile
+{
+    public static IFileProcessingStrategy CreateStrategy(string filePath)
+    {
+        if (!File.Exists(filePath))
         {
-            if (!File.Exists(filePath))
-            {
-                Console.WriteLine("Файл не существует.");
-                return null;
-            }
+            throw new FileNotFoundException("Файл не найден.", filePath);
+        }
 
-            // Получаем расширение файла в нижнем регистре.
-            string extension = Path.GetExtension(filePath).ToLower();
+        // Получаем расширение файла в нижнем регистре.
+        string extension = Path.GetExtension(filePath).ToLower();
 
-            return extension switch
-            {
+        return extension switch
+        {
             ".txt" => new ProcessTxtFile(),
             ".csv" => new ProcessCsvFile(),
             ".json" => new ProcessJsonFile(),
-            _ =>null
-        
-            };
-    }
-    }
+            _ => new UnsupportedFileProcessingStrategy(extension)
 
-    class Program
-    {      
-        static void Main(string[] args)
+        };
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        Console.OutputEncoding = System.Text.Encoding.UTF8;
+        Console.WriteLine("Введите путь к файлу:");
+        string filePath = Console.ReadLine();
+
+        try
         {
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-            Console.WriteLine("Введите путь к файлу:");
-            string filePath = Console.ReadLine();
-
-            IStrategy? strategy = FabricStrategyProcessFile.CreateStrategy(filePath);
-            if (strategy != null)
-            {
-                ContextProcessFile context = new ContextProcessFile(strategy);
-                context.ProcessFile(filePath);
-            }
-            else
-            {
-                Console.WriteLine("Неподдерживаемый тип файла: {0}", Path.GetExtension(filePath));
-            }
-
+            // Фабрика всегда возвращает ненулевую стратегию
+            IFileProcessingStrategy strategy = FabricStrategyProcessFile.CreateStrategy(filePath);
+            var context = new ContextProcessFile(strategy);
+            context.ProcessFile(filePath);
         }
+        catch (FileNotFoundException ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
     }
 }
