@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Newtonsoft.Json;
+using System.Text;
 
 namespace BuilderPattern;
 #region UML schema
@@ -72,8 +73,37 @@ public class CsvReportBuilder : IReportBuilder
 
     public string GetReport() => _report.ToString();
 }
-
 #endregion
+
+#region Реализация строителя для JSON-отчёта
+public class JsonReportBuilder : IReportBuilder
+{
+    private string _title;
+    private Dictionary<string, string> _data;
+
+    public void AddHeader(string title)
+    {
+        _title = title;
+    }
+
+    public void AddContent(Dictionary<string, string> data)
+    {
+        _data = data;
+    }
+
+    public string GetReport()
+    {
+        var reportObject = new
+        {
+            Title = _title,
+            Data = _data
+        };
+        return JsonConvert.SerializeObject(reportObject, Formatting.Indented);
+    }
+}
+#endregion
+
+
 #region Директор, управляющий процессом построения отчёта
 public class ReportDirector
 {
@@ -94,6 +124,37 @@ public class ReportDirector
 }
 #endregion
 
+#region Сохранение отчёта в файл
+public static class ReportSaver
+{
+    private static readonly string DirectoryPath = "Reports";
+
+    static ReportSaver()
+    {
+        if (!Directory.Exists(DirectoryPath))
+        {
+            Directory.CreateDirectory(DirectoryPath);
+        }
+    }
+
+
+    public static void SaveToFile(string report, string format)
+    {
+        string extension = format switch
+        {
+            "txt" => "txt",
+            "csv" => "csv",
+            "json" => "json",
+            _ => throw new ArgumentException("Неподдерживаемый формат")
+        };
+
+
+        string filePath = Path.Combine(DirectoryPath, $"Report_{DateTime.Now:yyyyMMdd_HHmmss}.{extension}");
+        File.WriteAllText(filePath, report);
+        Console.WriteLine($"Отчёт сохранён в файл: {filePath}");
+    }
+}
+#endregion
 class Program
 {
     static void Main()
@@ -105,21 +166,28 @@ class Program
             { "Клиенты", "35" }
         };
 
-        Console.WriteLine("Выберите формат отчёта (text/csv):");
+        Console.WriteLine("Выберите формат отчёта (text/csv/json):");
         string format = Console.ReadLine()?.ToLower();
 
         IReportBuilder builder = format switch
         {
-            "text" => new TextReportBuilder(),
+            "txt" => new TextReportBuilder(),
             "csv" => new CsvReportBuilder(),
+            "json" => new JsonReportBuilder(),
             _ => throw new ArgumentException("Неподдерживаемый формат!")
         };
 
         var director = new ReportDirector(builder);
         director.Construct("Отчёт о продажах", reportData);
+        var report = director.GetReport();
 
-        string report = director.GetReport();
-        Console.WriteLine(report);
+        Console.WriteLine("Вывести отчёт на экран? (y/n)");
+        if (Console.ReadLine()?.ToLower() == "y")
+        {
+            Console.WriteLine(report);
+        }
+
+        ReportSaver.SaveToFile(report, format);
     }
-}
 
+}
