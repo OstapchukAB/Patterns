@@ -1,5 +1,8 @@
 ﻿using Newtonsoft.Json;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
 using System.Text;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace BuilderPattern;
 #region UML schema
@@ -32,6 +35,7 @@ public interface IReportBuilder
     string GetReport();
 }
 #endregion
+
 #region  Реализация строителя для текстового отчёта
 public class TextReportBuilder : IReportBuilder
 {
@@ -76,7 +80,7 @@ public class CsvReportBuilder : IReportBuilder
 #endregion
 
 #region Реализация строителя для JSON-отчёта
-public class JsonReportBuilder : IReportBuilder
+public class JsonReportBuilder :  IReportBuilder
 {
     private string _title;
     private Dictionary<string, string> _data;
@@ -102,6 +106,50 @@ public class JsonReportBuilder : IReportBuilder
     }
 }
 #endregion
+#region Реализация строителя для PDF-отчёта
+public class PdfReportBuilder :  IReportBuilder
+{
+    
+    private readonly PdfDocument _document = new();
+    private PdfPage _page;
+    private XGraphics _gfx;
+    private readonly XFont _titleFont = new("Arial", 14,XFontStyleEx.Bold);
+    private readonly XFont _contentFont = new("Arial", 12);
+    private string _title;
+    private Dictionary<string, string> _data;
+
+    public void AddHeader(string title)
+    {
+        _title = title;
+        _page = _document.AddPage();
+        _gfx = XGraphics.FromPdfPage(_page);
+        _gfx.DrawString(_title, _titleFont, XBrushes.Black, new XPoint(20, 20));
+    }
+
+    public void AddContent(Dictionary<string, string> data)
+    {
+        _data = data;
+        var yPosition = 50;
+
+        foreach (var item in _data)
+        {
+            _gfx.DrawString($"{item.Key}: {item.Value}",
+                          _contentFont,
+                          XBrushes.Black,
+                          new XPoint(20, yPosition));
+            yPosition += 20;
+        }
+    }
+
+    public string GetReport()
+    {
+        using var stream = new MemoryStream();
+        _document.Save(stream);
+        return Convert.ToBase64String(stream.ToArray());
+    }
+}
+#endregion
+
 
 
 #region Директор, управляющий процессом построения отчёта
@@ -145,12 +193,22 @@ public static class ReportSaver
             "txt" => "txt",
             "csv" => "csv",
             "json" => "json",
+            "pdf" => "pdf",
             _ => throw new ArgumentException("Неподдерживаемый формат")
         };
 
 
         string filePath = Path.Combine(DirectoryPath, $"Report_{DateTime.Now:yyyyMMdd_HHmmss}.{extension}");
-        File.WriteAllText(filePath, report);
+        if (format == "pdf")
+        {
+            var pdfBytes = Convert.FromBase64String(report);
+            File.WriteAllBytes(filePath, pdfBytes);
+        }
+        else
+        {
+            File.WriteAllText(filePath, report, Encoding.UTF8);
+        }
+
         Console.WriteLine($"Отчёт сохранён в файл: {filePath}");
     }
 }
@@ -166,7 +224,7 @@ class Program
             { "Клиенты", "35" }
         };
 
-        Console.WriteLine("Выберите формат отчёта (text/csv/json):");
+        Console.WriteLine("Выберите формат отчёта (text/csv/json/pdf):");
         string format = Console.ReadLine()?.ToLower();
 
         IReportBuilder builder = format switch
@@ -174,6 +232,7 @@ class Program
             "txt" => new TextReportBuilder(),
             "csv" => new CsvReportBuilder(),
             "json" => new JsonReportBuilder(),
+            "pdf"=> new PdfReportBuilder(),
             _ => throw new ArgumentException("Неподдерживаемый формат!")
         };
 
@@ -181,10 +240,13 @@ class Program
         director.Construct("Отчёт о продажах", reportData);
         var report = director.GetReport();
 
-        Console.WriteLine("Вывести отчёт на экран? (y/n)");
-        if (Console.ReadLine()?.ToLower() == "y")
+        if (!format.Contains("pdf"))
         {
-            Console.WriteLine(report);
+            Console.WriteLine("Вывести отчёт на экран? (y/n)");
+            if (Console.ReadLine()?.ToLower() == "y")
+            {
+                Console.WriteLine(report);
+            }
         }
 
         ReportSaver.SaveToFile(report, format);
