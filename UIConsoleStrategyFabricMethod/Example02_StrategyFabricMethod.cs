@@ -48,6 +48,7 @@
         Выведи результат в консоль.
  */
 #endregion
+#region Стратегии обработки строки
 public interface ITextTransformStrategy
 {
 	public string TransformText(string text);
@@ -86,8 +87,9 @@ public class TextContext
 		return _strategy.TransformText(text);
 	}
 }
+#endregion
 
-#region Фабричный метод
+#region Фабрика стратегий
 abstract class TextStrategy
 {
     public abstract ITextTransformStrategy GetStrategy();
