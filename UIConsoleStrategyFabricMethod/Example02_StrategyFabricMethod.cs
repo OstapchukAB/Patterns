@@ -75,6 +75,28 @@ using System.Text;
 #endregion
 namespace TextTransformationExample
 {
+    #region Собственный логгер
+    public static class Logger
+    {
+        private static readonly object _lock = new object();
+        private static readonly string LogFilePath = "log.txt";
+
+        public static void Log(string message)
+        {
+            string logMessage = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss} - {message}";
+            lock (_lock)
+            {
+                // Логирование в консоль
+                Console.WriteLine(logMessage);
+                // Логирование в файл (добавление в конец файла)
+                File.AppendAllText(LogFilePath, logMessage + Environment.NewLine);
+            }
+        }
+    }
+
+    #endregion
+
+
     #region Стратегии
 
     /// <summary>
@@ -193,6 +215,7 @@ namespace TextTransformationExample
     {
         static void Main(string[] args)
         {
+            Logger.Log("Старт прилоежения");
             Console.OutputEncoding = Encoding.UTF8;
 
             // Запрос исходного текста
@@ -212,6 +235,7 @@ namespace TextTransformationExample
             TextContext context = new TextContext(strategy);
             string result = context.ExecuteAlgorithm(input);
             Console.WriteLine("Результат: " + result);
+            Logger.Log("Завершение приложения");
         }
     }
 }
