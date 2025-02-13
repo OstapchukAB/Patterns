@@ -48,47 +48,106 @@
         Выведи результат в консоль.
  */
 #endregion
+public interface ITextTransformStrategy
+{
+	public string TransformText(string text);
+}
+public class TextToUpperStrategy:ITextTransformStrategy
+{
+	public string TransformText(string text)=>text.ToUpper();
+}
+public class TextToLowerStrategy:ITextTransformStrategy
+{
+	public string TransformText(string text)=>text.ToLower();
+}
+public class TextToReverseStrategy:ITextTransformStrategy
+{
+	public string TransformText(string text)
+	{
+		 char[] arr = text.ToCharArray();
+         Array.Reverse(arr);
+         return new string(arr);
+	}
+}
+
+public class TextContext
+{
+    ITextTransformStrategy _strategy;
+	public TextContext(ITextTransformStrategy strategy)
+	{
+		_strategy=strategy;
+	}
+	public void SetStrategy(ITextTransformStrategy strategy)
+	{
+		_strategy=strategy;
+	}
+	public string ExecuteAlgoritm(string text)
+	{
+		return _strategy.TransformText(text);
+	}
+}
+
+#region Фабричный метод
+abstract class TextStrategy
+{
+    public abstract ITextTransformStrategy GetStrategy();
+}
+class TextToUpper : TextStrategy
+{
+    public override ITextTransformStrategy GetStrategy()=> new TextToUpperStrategy();
+}
+class TextToLower : TextStrategy
+{
+    public override ITextTransformStrategy GetStrategy()=> new TextToLowerStrategy();
+
+}
+class TextToReverse : TextStrategy
+{
+    public override ITextTransformStrategy GetStrategy()=> new TextToReverseStrategy();
+}
+abstract class CreatorStrategy
+{
+	public abstract TextStrategy FactoryMethod();
+}
+class CreatorTextToUpper : CreatorStrategy
+{
+    public override TextStrategy FactoryMethod() => new TextToUpper();
+}
+class CreatorTextToLower :CreatorStrategy
+{
+    public override TextStrategy FactoryMethod() => new TextToLower();
+}
+class CreatorTextToReverse :CreatorStrategy
+{
+	public override TextStrategy FactoryMethod()=>new TextToReverse();
+}
+#endregion
+
 class Program
 {
-    /// <summary>
-    /// Процедурный метод, выполняющий преобразование текста.
-    /// В зависимости от типа преобразования (upper, lower, reverse)
-    /// используется цепочка if-else.
-    /// </summary>
-    /// <param name="text">Исходная строка</param>
-    /// <param name="transformType">Тип преобразования</param>
-    /// <returns>Преобразованная строка</returns>
-    static string TransformText(string text, string transformType)
-    {
-        if (transformType == "upper")
-        {
-            return text.ToUpper();
-        }
-        else if (transformType == "lower")
-        {
-            return text.ToLower();
-        }
-        else if (transformType == "reverse")
-        {
-            char[] arr = text.ToCharArray();
-            Array.Reverse(arr);
-            return new string(arr);
-        }
-        else
-        {
-            throw new ArgumentException("Неподдерживаемый тип преобразования");
-        }
-    }
-
-    static void Main(string[] args)
+     static void Main(string[] args)
     {
         Console.WriteLine("Введите строку для преобразования:");
         string input = Console.ReadLine();
 
         Console.WriteLine("Выберите тип преобразования (upper, lower, reverse):");
         string type = Console.ReadLine();
-
-        string result = TransformText(input, type);
-        Console.WriteLine("Результат: " + result);
+		
+		
+        TextStrategy? factory = type switch 
+        { 
+            "upper" => new CreatorTextToUpper().FactoryMethod(),
+            "lower" => new CreatorTextToLower().FactoryMethod(),
+            "reverse" => new CreatorTextToReverse().FactoryMethod(),
+            _=> null
+        };
+        if (factory == null)
+        {
+            Console.WriteLine("данная стратегия не рализована!");
+            return;
+        }
+        var strategy = factory.GetStrategy();
+        var textContext= new TextContext(strategy);
+        Console.WriteLine("Результат: " + textContext.ExecuteAlgoritm(input));
     }
 }
