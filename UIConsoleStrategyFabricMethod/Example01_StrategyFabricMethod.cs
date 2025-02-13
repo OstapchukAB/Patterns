@@ -129,23 +129,23 @@ public static class FabricStrategyProcessFile
 
 class Program
 {
-    static void Main(string[] args)
-    {
-        Console.OutputEncoding = System.Text.Encoding.UTF8;
-        Console.WriteLine("Введите путь к файлу:");
-        string filePath = Console.ReadLine();
+    //static void Main(string[] args)
+    //{
+    //    Console.OutputEncoding = System.Text.Encoding.UTF8;
+    //    Console.WriteLine("Введите путь к файлу:");
+    //    string filePath = Console.ReadLine();
 
-        try
-        {
-            // Фабрика всегда возвращает ненулевую стратегию
-            IFileProcessingStrategy strategy = FabricStrategyProcessFile.CreateStrategy(filePath);
-            var context = new ContextProcessFile(strategy);
-            context.ProcessFile(filePath);
-        }
-        catch (FileNotFoundException ex)
-        {
-            Console.WriteLine(ex.Message);
-        }
+    //    try
+    //    {
+    //        // Фабрика всегда возвращает ненулевую стратегию
+    //        IFileProcessingStrategy strategy = FabricStrategyProcessFile.CreateStrategy(filePath);
+    //        var context = new ContextProcessFile(strategy);
+    //        context.ProcessFile(filePath);
+    //    }
+    //    catch (FileNotFoundException ex)
+    //    {
+    //        Console.WriteLine(ex.Message);
+    //    }
 
-    }
+    //}
 }
