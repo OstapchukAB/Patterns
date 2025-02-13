@@ -29,72 +29,109 @@ using System.Linq;
 
 */ 
 #endregion
-namespace FileProcessingAntiPattern
+namespace FileProcessingPattern
 {
-    class Program
+ 
+    public interface IStrategy
     {
-        /// <summary>
-        /// Процедурный метод для обработки файла.
-        /// Определяет тип файла по расширению и выполняет соответствующую логику:
-        /// - .txt: считает количество строк
-        /// - .csv: считает количество столбцов в первой строке
-        /// - .json: приближённо считает количество объектов (на основе подсчёта символов '{')
-        /// При добавлении нового типа файла потребуется модификация этого метода.
-        /// </summary>
-        /// <param name="filePath">Путь к файлу</param>
-        public static void ProcessFile(string filePath)
+        void ProcesseFile(string filePath);
+    }
+
+    public class ProcessTxtFile : IStrategy
+    {
+        public void ProcesseFile(string filePath)
+        {
+            // Обработка текстового файла: подсчёт количества строк.
+            string[] lines = File.ReadAllLines(filePath);
+            Console.WriteLine("Текстовый файл содержит {0} строк.", lines.Length);
+        }
+    }
+    public class ProcessCsvFile : IStrategy
+    {
+        public void ProcesseFile(string filePath)
+        {
+            // Обработка CSV-файла: подсчёт количества столбцов в первой строке.
+            string[] lines = File.ReadAllLines(filePath);
+            if (lines.Length > 0)
+            {
+                string[] columns = lines[0].Split(';');
+                Console.WriteLine("CSV-файл содержит {0} столбцов.", columns.Length);
+            }
+            else
+            {
+                Console.WriteLine("CSV-файл пуст.");
+            }
+        }
+    }
+    public class ProcessJsonFile : IStrategy
+    {
+        public void ProcesseFile(string filePath)
+        {
+            // Обработка JSON-файла: приближённый подсчёт объектов.
+            // (Наивный способ – подсчитываем количество символов '{'.)
+            string jsonContent = File.ReadAllText(filePath);
+            int objectCount = jsonContent.Count(ch => ch == '{');
+            Console.WriteLine("JSON-файл содержит приблизительно {0} объектов.", objectCount);
+        }
+    }
+
+    public class ContextProcessFile
+    {
+        private IStrategy _strategy;
+        public ContextProcessFile(IStrategy strategy)
+        {
+            _strategy = strategy;
+        }
+        public void ProcessFile(string filePath)
+        {
+            _strategy.ProcesseFile(filePath);
+        }
+    }
+
+    //Простая фабрика получения нужной стратегии
+    public static class FabricStrategyProcessFile
+    {
+        public static IStrategy? CreateStrategy(string filePath)
         {
             if (!File.Exists(filePath))
             {
                 Console.WriteLine("Файл не существует.");
-                return;
+                return null;
             }
 
             // Получаем расширение файла в нижнем регистре.
             string extension = Path.GetExtension(filePath).ToLower();
 
-            if (extension == ".txt")
+            return extension switch
             {
-                // Обработка текстового файла: подсчёт количества строк.
-                string[] lines = File.ReadAllLines(filePath);
-                Console.WriteLine("Текстовый файл содержит {0} строк.", lines.Length);
-            }
-            else if (extension == ".csv")
-            {
-                // Обработка CSV-файла: подсчёт количества столбцов в первой строке.
-                string[] lines = File.ReadAllLines(filePath);
-                if (lines.Length > 0)
-                {
-                    string[] columns = lines[0].Split(';');
-                    Console.WriteLine("CSV-файл содержит {0} столбцов.", columns.Length);
-                }
-                else
-                {
-                    Console.WriteLine("CSV-файл пуст.");
-                }
-            }
-            else if (extension == ".json")
-            {
-                // Обработка JSON-файла: приближённый подсчёт объектов.
-                // (Наивный способ – подсчитываем количество символов '{'.)
-                string jsonContent = File.ReadAllText(filePath);
-                int objectCount = jsonContent.Count(ch => ch == '{');
-                Console.WriteLine("JSON-файл содержит приблизительно {0} объектов.", objectCount);
-            }
-            else
-            {
-                Console.WriteLine("Неподдерживаемый тип файла: {0}", extension);
-            }
-        }
+            ".txt" => new ProcessTxtFile(),
+            ".csv" => new ProcessCsvFile(),
+            ".json" => new ProcessJsonFile(),
+            _ =>null
+        
+            };
+    }
+    }
 
+    class Program
+    {      
         static void Main(string[] args)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             Console.WriteLine("Введите путь к файлу:");
             string filePath = Console.ReadLine();
 
-            // Вызываем процедурный метод для обработки файла.
-            ProcessFile(filePath);
+            IStrategy? strategy = FabricStrategyProcessFile.CreateStrategy(filePath);
+            if (strategy != null)
+            {
+                ContextProcessFile context = new ContextProcessFile(strategy);
+                context.ProcessFile(filePath);
+            }
+            else
+            {
+                Console.WriteLine("Неподдерживаемый тип файла: {0}", Path.GetExtension(filePath));
+            }
+
         }
     }
 }
