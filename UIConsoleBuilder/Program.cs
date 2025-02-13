@@ -2,7 +2,6 @@
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using System.Text;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace BuilderPattern;
 #region UML schema
@@ -80,7 +79,7 @@ public class CsvReportBuilder : IReportBuilder
 #endregion
 
 #region Реализация строителя для JSON-отчёта
-public class JsonReportBuilder :  IReportBuilder
+public class JsonReportBuilder : IReportBuilder
 {
     private string _title;
     private Dictionary<string, string> _data;
@@ -107,13 +106,13 @@ public class JsonReportBuilder :  IReportBuilder
 }
 #endregion
 #region Реализация строителя для PDF-отчёта
-public class PdfReportBuilder :  IReportBuilder
+public class PdfReportBuilder : IReportBuilder
 {
-    
+
     private readonly PdfDocument _document = new();
     private PdfPage _page;
     private XGraphics _gfx;
-    private readonly XFont _titleFont = new("Arial", 14,XFontStyleEx.Bold);
+    private readonly XFont _titleFont = new("Arial", 14, XFontStyleEx.Bold);
     private readonly XFont _contentFont = new("Arial", 12);
     private string _title;
     private Dictionary<string, string> _data;
@@ -232,7 +231,7 @@ class Program
             "txt" => new TextReportBuilder(),
             "csv" => new CsvReportBuilder(),
             "json" => new JsonReportBuilder(),
-            "pdf"=> new PdfReportBuilder(),
+            "pdf" => new PdfReportBuilder(),
             _ => throw new ArgumentException("Неподдерживаемый формат!")
         };
 
