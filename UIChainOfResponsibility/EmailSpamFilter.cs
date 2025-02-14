@@ -117,7 +117,7 @@ public abstract  class EmailFilterHandler
 //Антиспам-фильтр
 public class HandlerSpam : EmailFilterHandler
 {
-    string[] spam = ["распродажа","бесплатно"];
+    string[] spam = ["распродажа","бесплатн"];
     public override void HandleRequest(Email email)
     {
 
