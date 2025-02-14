@@ -29,7 +29,39 @@
  
  */
 #endregion
+#region Структура проекта
+/*
+ EmailProcessingSystem/
+│── EmailProcessingSystem.sln   # Файл решения
+│
+├── EmailProcessingSystem/       # Основной проект
+│   ├── Program.cs               # Точка входа
+│   ├── Models/
+│   │   ├── Email.cs             # Модель письма
+│   │   ├── EmailType.cs         # Перечисление типов писем
+│   ├── Handlers/                # Обработчики фильтров
+│   │   ├── EmailFilterHandler.cs  # Базовый класс обработчика
+│   │   ├── HandlerSpam.cs         # Фильтр спама
+│   │   ├── HandlerImportant.cs    # Фильтр важных писем
+│   │   ├── HandlerCoworker.cs     # Фильтр писем от коллег
+│   │   ├── HandlerKeysWord.cs     # Фильтр по ключевым словам
+│   │   ├── HandlerDefault.cs      # Обработчик по умолчанию
+│   ├── Services/
+│   │   ├── EmailSorter.cs       # Класс сортировки писем по папкам
+│
+├── EmailProcessingSystem.Tests/  # Тесты
+│   ├── EmailFilterTests.cs       # Тесты обработки писем
+│   ├── EmailSorterTests.cs       # Тесты сортировки писем
+│
+└── README.md                     # Документация проекта
+Объяснение структуры:
 
+ Models/ – хранит основные модели, такие как Email и EmailType.
+ Handlers/ – содержит все классы фильтрации (по спаму, важности, ключевым словам и т. д.).
+ Services/ – хранит EmailSorter, который отвечает за распределение писем по папкам.
+ Tests/ – тестирует обработку писем и их сортировку.
+ */
+#endregion
 namespace UIChainOfResponsibilitySpamFilter;
 #region классы модели и вспомогательные
 public class  Email
