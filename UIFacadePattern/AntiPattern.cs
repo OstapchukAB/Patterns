@@ -18,7 +18,7 @@
  */
 #endregion
 
-namespace SmartHomeAntiPattern;
+namespace SmartHomePattern;
 
 // Подсистема 1: Освещение
 public class LightSystem
@@ -43,37 +43,60 @@ public class SecuritySystem
     public void Deactivate() => Console.WriteLine("Охранная система деактивирована.");
 }
 
+#region применение паттерна фасад
+public class SmartHomeFacade
+{
+    readonly LightSystem _lights;
+    readonly AirConditioner _ac;
+    readonly SecuritySystem _security;
+
+    public SmartHomeFacade(LightSystem lights, AirConditioner ac, SecuritySystem security)
+    {
+        _lights = lights;
+        _ac = ac;
+        _security = security;
+    }
+   
+    public void ActivateNight()
+    {
+        // Режим \"Ночь\":\n" + 
+        // Освещение выключается, кондиционер выключается, охранная система включается.
+        _lights.TurnOff();
+        _ac.TurnOff();
+        _security.Activate();
+    }
+    public void ActivateMorning()
+    {
+        // Режим \"Утро\":\n" + 
+        // Освещение включается с яркостью 70%, кондиционер включается и устанавливается комфортная температура, охранная система отключается.
+        _lights.TurnOn();
+        _lights.SetBrightness(70);
+        _ac.TurnOn();
+        _ac.SetTemperature(22);
+        _security.Deactivate();
+    }
+}
+#endregion
+
 class Program
 {
     static void Main()
     {
         // Создание объектов подсистем
-        LightSystem lights = new LightSystem();
-        AirConditioner ac = new AirConditioner();
-        SecuritySystem security = new SecuritySystem();
-
+        var lights = new LightSystem();
+        var ac = new AirConditioner();
+        var security = new SecuritySystem();
+        var facade= new SmartHomeFacade(lights, ac, security);
         Console.WriteLine("Выберите режим работы умного дома (morning/night):");
         string mode = Console.ReadLine()?.ToLower();
 
-        // Антипаттерн: логика управления распределена по клиентскому коду
-        // При смене режима приходится изменять код в нескольких местах.
         if (mode == "morning")
         {
-            // Режим \"Утро\":\n" + 
-            // Освещение включается с яркостью 70%, кондиционер включается и устанавливается комфортная температура, охранная система отключается.
-            lights.TurnOn();
-            lights.SetBrightness(70);
-            ac.TurnOn();
-            ac.SetTemperature(22);
-            security.Deactivate();
+            facade.ActivateMorning();
         }
         else if (mode == "night")
         {
-            // Режим \"Ночь\":\n" + 
-            // Освещение выключается, кондиционер выключается, охранная система включается.
-            lights.TurnOff();
-            ac.TurnOff();
-            security.Activate();
+            facade.ActivateNight();
         }
         else
         {
