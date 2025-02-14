@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConsoleStrategyFabricMeth
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConsoleBuilder", "UIConsoleBuilder\UIConsoleBuilder.csproj", "{CA6E2952-8580-4C74-8D1F-1A267BD02239}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIFacadePattern", "UIFacadePattern\UIFacadePattern.csproj", "{D24750A0-2E66-4FDF-894D-D8E7F457219E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{CA6E2952-8580-4C74-8D1F-1A267BD02239}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA6E2952-8580-4C74-8D1F-1A267BD02239}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA6E2952-8580-4C74-8D1F-1A267BD02239}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D24750A0-2E66-4FDF-894D-D8E7F457219E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D24750A0-2E66-4FDF-894D-D8E7F457219E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D24750A0-2E66-4FDF-894D-D8E7F457219E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D24750A0-2E66-4FDF-894D-D8E7F457219E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
