@@ -115,7 +115,7 @@ public abstract  class EmailFilterHandler
     
 }
 //Антиспам-фильтр
-class HandlerSpam : EmailFilterHandler
+public class HandlerSpam : EmailFilterHandler
 {
     string[] spam = ["распродажа","бесплатно"];
     public override void HandleRequest(Email email)
@@ -137,7 +137,7 @@ class HandlerSpam : EmailFilterHandler
         }
     }
 }
-class HandlerImportant : EmailFilterHandler
+public class HandlerImportant : EmailFilterHandler
 {
     string[] sender = ["director", "boss"];   
     public override void HandleRequest(Email email)
@@ -158,7 +158,7 @@ class HandlerImportant : EmailFilterHandler
     }
 }
 
-class HandlerCoworker : EmailFilterHandler
+public class HandlerCoworker : EmailFilterHandler
 {
     string[] sender = ["@corp.com"];
     public override void HandleRequest(Email email)
@@ -179,7 +179,7 @@ class HandlerCoworker : EmailFilterHandler
     }
 }
 
-class HandlerKeysWord : EmailFilterHandler
+public class HandlerKeysWord : EmailFilterHandler
 {
     string[] keys = ["деньги", "пароль", "секрет"];
     public override void HandleRequest(Email email)
@@ -200,7 +200,7 @@ class HandlerKeysWord : EmailFilterHandler
     }
 }
 
-class HandlerDefault : EmailFilterHandler
+public class HandlerDefault : EmailFilterHandler
 {
     public override void HandleRequest(Email email)
     {
