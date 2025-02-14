@@ -94,7 +94,7 @@ namespace FacadePatternExample
 
     class Program
     {
-        static void Main()
+         void Main()
         {
             // Создание подсистем
             DvdPlayer dvdPlayer = new DvdPlayer();
