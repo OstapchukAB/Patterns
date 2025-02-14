@@ -1,14 +1,16 @@
 ﻿using System;
 
 namespace UIChainOfResponsibilitySpamFilter;
-
+#region классы модели и вспомогательные
 public class  Email
 {
-    public Email(string sender, string text)
+    public Email(int id,string sender, string text)
     {
+        Id= id;
         Sender = sender;
         Text = text;
     }
+    public int Id;
     public string Sender { get; }
     public string Text { get; }
     public EmailType PathEmail { get;  set; } = EmailType.DEFAULT;
@@ -23,6 +25,26 @@ public enum EmailType
     KEYSWORD,
     DEFAULT
 }
+
+public class EmailSorter
+{
+    private readonly Dictionary<EmailType, string> _folders = new()
+    {
+        { EmailType.SPAM, "Spam" },
+        { EmailType.IMPORTANT, "Important" },
+        { EmailType.COWORKER, "Coworkers" },
+        { EmailType.KEYSWORD, "Keywords" },
+        { EmailType.DEFAULT, "Inbox" }
+    };
+
+    public void SortEmail(Email email)
+    {
+        string folder = _folders[email.PathEmail];
+        Console.WriteLine($"Письмо № [{email.Id}] от {email.Sender} перемещено в папку [{folder}].");
+    }
+}
+
+#endregion
 public abstract  class EmailFilterHandler
 {
    
@@ -41,8 +63,8 @@ class HandlerSpam : EmailFilterHandler
         {
             if (email.Text.Contains(item))
             {
-                Console.WriteLine($"Письмо {email.Sender} содержит спам");
                 email.PathEmail = EmailType.SPAM;
+                Console.WriteLine($"письмо {email.Sender}  помечено:[{email.PathEmail}]");
                 return;
             }
         }
@@ -62,8 +84,8 @@ class HandlerImportant : EmailFilterHandler
         {
             if (email.Sender.Contains(item))
             {
-                Console.WriteLine($"Письмо {email.Sender} от важного отправителя");
                 email.PathEmail = EmailType.IMPORTANT;
+                Console.WriteLine($"письмо {email.Sender}  помечено:[{email.PathEmail}]");
                 return;
             }
         }
@@ -83,8 +105,8 @@ class HandlerCoworker : EmailFilterHandler
         {
             if (email.Sender.Contains(item))
             {
-                Console.WriteLine($"Письмо {email.Sender} от коллеги");
                 email.PathEmail = EmailType.COWORKER;
+                Console.WriteLine($"письмо  {email.Sender}  помечено:[{email.PathEmail}]");
                 return;
             }
         }
@@ -104,8 +126,8 @@ class HandlerKeysWord : EmailFilterHandler
         {
             if (email.Text.Contains(item))
             {
-                Console.WriteLine($"Письмо {email.Sender} содержит ключевые слова");
                 email.PathEmail = EmailType.KEYSWORD;
+                Console.WriteLine($"письмо {email.Sender}  помечено:[{email.PathEmail}]");
                 return;
             }
         }
@@ -120,8 +142,8 @@ class HandlerDefault : EmailFilterHandler
 {
     public override void HandleRequest(Email email)
     {
-        Console.WriteLine($"Письмо {email.Sender} обычное");
         email.PathEmail = EmailType.DEFAULT;
+        Console.WriteLine($"письмо {email.Sender}  помечено:[{email.PathEmail}]");
     }
 }
 
@@ -142,18 +164,21 @@ public class Program
 
         var emails = new Email[]
         {
-            new Email("user@gmail.com", "распродажа"),
-            new Email("director@copr.com", "выполнить распоряжение"),
-            new Email("coworker@corp.com", "направляю вам служебное поручение"),
-            new Email("user4", "привет"),
-            new Email("user", "пароль"),
+            new Email(111,"user@gmail.com", "распродажа"),
+            new Email(120,"director@copr.com", "выполнить распоряжение"),
+            new Email(1234,"coworker@corp.com", "направляю вам служебное поручение"),
+            new Email(1999,"user4", "привет"),
+            new Email(2456,"user", "пароль"),
         };
+
+        var sorter = new EmailSorter();
 
         foreach (var item in emails)
         {
+            //начинаем обработку с данного уровня
             spam.HandleRequest(item);
 
-            Console.WriteLine($"письмо {item.Sender}  помечено:[{item.PathEmail}]");
+            sorter.SortEmail(item);    // Перемещение в нужную папку
         }
 
     }
