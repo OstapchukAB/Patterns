@@ -115,12 +115,19 @@ class Program
         Approver director = new Director();
         Approver ceo = new CEO();
 
+        //здесь устанавливаем цепочку
         manager.SetSuccessor(director);
         director.SetSuccessor(ceo);
 
         // Тестирование
-        manager.HandleRequest(800);   // Менеджер
-        manager.HandleRequest(3000);  // Директор
-        manager.HandleRequest(10000); // Генеральный директор
+        var dollars= new int[] { 800, 3000, 10000 };
+
+        foreach (int i in dollars) 
+        { 
+            manager.HandleRequest(i);
+        }
+        //manager.HandleRequest(800);   // Менеджер
+        //manager.HandleRequest(3000);  // Директор
+        //manager.HandleRequest(10000); // Генеральный директор
     }
 }
