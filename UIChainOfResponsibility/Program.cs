@@ -108,7 +108,7 @@ public class CEO : Approver
 // Клиентский код
 class Program
 {
-    static void Main()
+     void Main()
     {
         // Настройка цепочки
         Approver manager = new Manager();
