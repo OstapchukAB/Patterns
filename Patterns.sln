@@ -35,6 +35,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIChainOfResponsibility", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChainOfResponsibility.Tests", "ChainOfResponsibility.Tests\ChainOfResponsibility.Tests.csproj", "{86400BE8-1E02-4AF1-81A4-E1B93D2FB691}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UITemplateMethod", "UITemplateMethod\UITemplateMethod.csproj", "{4CE6EDCF-44F2-49FE-B21D-D21CF93B5265}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,10 @@ Global
 		{86400BE8-1E02-4AF1-81A4-E1B93D2FB691}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{86400BE8-1E02-4AF1-81A4-E1B93D2FB691}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{86400BE8-1E02-4AF1-81A4-E1B93D2FB691}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4CE6EDCF-44F2-49FE-B21D-D21CF93B5265}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4CE6EDCF-44F2-49FE-B21D-D21CF93B5265}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4CE6EDCF-44F2-49FE-B21D-D21CF93B5265}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4CE6EDCF-44F2-49FE-B21D-D21CF93B5265}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
