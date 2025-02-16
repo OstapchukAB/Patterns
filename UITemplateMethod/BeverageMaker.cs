@@ -72,7 +72,7 @@ namespace PatternTemplateMethod
     }
     class Program
     {
-        static void Main(string[] args)
+         static void Main(string[] args)
         {
             Console.WriteLine("=== Готовим кофе ===");
             BeverageMaker coffee = new CoffeeMaker();
