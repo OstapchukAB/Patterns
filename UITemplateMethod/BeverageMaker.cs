@@ -18,53 +18,69 @@
 Когда планируется, что в будущем подклассы должны будут переопределять различные этапы алгоритма без изменения его структуры
 Когда в классах, реализующим схожий алгоритм, происходит дублирование кода.
 Вынесение общего кода в шаблонный метод уменьшит его дублирование в подклассах.
+
+********************
+Преимущества нижеописанной реализации:
+Как это работает:
+
+  BeverageMaker задает «костяк» алгоритма в методе Prepare()
+  Общие шаги (BoilWater, PourInCup) реализованы в базовом классе
+  Уникальные шаги (Brew, AddCondiments) делегируются подклассам
+  При вызове Prepare() для любого напитка выполняются все шаги в строгом порядке
+
+Преимущества подхода:
+  Изменение общего шага (например, добавление шага HeatCup()) требует правки только базового класса
+  Невозможно нарушить порядок шагов (например, забыть вскипятить воду)
+  Удобная точка для добавления хуков (например, логирования)
  */
 #endregion
 
-namespace PatternTemplateMethod;
-// Базовый класс с шаблонным методом - Производитель напитков
-public abstract class BeverageMaker
+namespace PatternTemplateMethod
 {
-    // Шаблонный метод, определяющий структуру алгоритма
-    public void PrepareBeverage()
+    // Базовый класс с шаблонным методом - Производитель напитков
+    public abstract class BeverageMaker
     {
-        BoilWater(); //Вскипятить воду
-        Brew(); //Заварить напиток
-        PourInCup(); //Налить в чашку
-        AddCondiments(); //Добавить добавки
+        // Шаблонный метод, определяющий структуру алгоритма
+        public void PrepareBeverage()
+        {
+            BoilWater(); //Вскипятить воду - Общий метод
+            Brew(); //Заварить напиток
+            PourInCup(); //Налить в чашку - Общий метод
+            AddCondiments(); //Добавить добавки
+        }
+
+        // Общий шаг для всех напитков (Общие шаги, реализованные в базовом классе)
+        private void BoilWater() => Console.WriteLine("Кипятим воду");
+        private void PourInCup() => Console.WriteLine("Наливаем в чашку");
+
+        // (Уникальные) шаги, которые должны реализовать подклассы 
+        protected abstract void Brew();
+        protected abstract void AddCondiments();
     }
 
-    // Общий шаг для всех напитков (Общие шаги, реализованные в базовом классе)
-    private void BoilWater() => Console.WriteLine("Кипятим воду");
-    private void PourInCup() => Console.WriteLine("Наливаем в чашку");
-
-    // (Уникальные) шаги, которые должны реализовать подклассы 
-    protected abstract void Brew();
-    protected abstract void AddCondiments();
-}
-
-// Конкретные реализации
-public class CoffeeMaker : BeverageMaker
-{
-    protected override void Brew() => Console.WriteLine("Завариваем кофе");
-    protected override void AddCondiments() => Console.WriteLine("Добавляем молоко и сахар");
-}
-
-public class TeaMaker : BeverageMaker
-{
-    protected override void Brew() => Console.WriteLine("Завариваем чайные листья");
-    protected override void AddCondiments() => Console.WriteLine("Добавляем лимон");
-}
-class Program
-{
-    static void Main(string[] args)
+    // Конкретные реализации
+    public class CoffeeMaker : BeverageMaker
     {
-        Console.WriteLine("=== Готовим кофе ===");
-        BeverageMaker coffee = new CoffeeMaker();
-        coffee.PrepareBeverage();
+        protected override void Brew() => Console.WriteLine("Завариваем кофе");
+        protected override void AddCondiments() => Console.WriteLine("Добавляем молоко и сахар");
+    }
 
-        Console.WriteLine("\n=== Готовим чай ===");
-        BeverageMaker tea = new TeaMaker();
-        tea.PrepareBeverage();
+    public class TeaMaker : BeverageMaker
+    {
+        protected override void Brew() => Console.WriteLine("Завариваем чайные листья");
+        protected override void AddCondiments() => Console.WriteLine("Добавляем лимон");
+    }
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Console.WriteLine("=== Готовим кофе ===");
+            BeverageMaker coffee = new CoffeeMaker();
+            coffee.PrepareBeverage();
+
+            Console.WriteLine("\n=== Готовим чай ===");
+            BeverageMaker tea = new TeaMaker();
+            tea.PrepareBeverage();
+        }
     }
 }
