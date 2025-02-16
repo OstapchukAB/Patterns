@@ -16,7 +16,7 @@
 //}
 class Program
 {
-    static void Main(string[] args)
+     void Main(string[] args)
     {
         // Клиентский код работает с абстракцией фабрики
         IGUIFactory guiFactory = new WindowsFactory();
