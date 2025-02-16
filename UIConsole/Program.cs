@@ -5,7 +5,7 @@ class Program
 {
     static void Main()
     {
-        Logger.InitLogger(); // Запускаем логирование
+        Logger.InitLogger(); // Запускаем логирование  .
         IFileService fileService = new FileService();
 
         while (true)
