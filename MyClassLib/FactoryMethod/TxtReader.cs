@@ -1,4 +1,4 @@
-﻿namespace MyClassLib.FactoryMethod
+﻿namespace FabricMethodClassLib.FactoryMethod
 {
     public class TxtReader : IFileReader
     {

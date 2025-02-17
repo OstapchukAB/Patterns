@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 
-namespace MyClassLib.FactoryMethod
+namespace FabricMethodClassLib.FactoryMethod
 {
     public class JsonReader : IFileReader
     {

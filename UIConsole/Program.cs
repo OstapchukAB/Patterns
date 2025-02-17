@@ -1,5 +1,5 @@
 ﻿using System;
-using MyClassLib;
+using FabricMethodClassLib;
 namespace UIConsole;
 class Program
 {

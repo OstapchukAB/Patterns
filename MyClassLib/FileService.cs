@@ -1,6 +1,6 @@
-﻿using MyClassLib.FactoryMethod;
+﻿using FabricMethodClassLib.FactoryMethod;
 
-namespace MyClassLib
+namespace FabricMethodClassLib
 {
     public class FileService:IFileService
     {

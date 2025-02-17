@@ -17,7 +17,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConsoleAbstractFabricExam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConsoleAbstractFabricExample.Tests", "UIConsoleExample.Tests\UIConsoleAbstractFabricExample.Tests.csproj", "{CC325AD8-3F6F-45B0-A22B-FE1F5021E706}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FabricMethodExample02", "Example02\FabricMethodExample02.csproj", "{BDF7EABF-3612-4332-BBC6-747E7D4A53AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConsoleFabricMethodExample02", "Example02\UIConsoleFabricMethodExample02.csproj", "{BDF7EABF-3612-4332-BBC6-747E7D4A53AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIFabricMethodExample03", "UIExample03FabricMethod\UIFabricMethodExample03.csproj", "{6F5FFC60-B3EE-477A-BEBC-BE75575C63A7}"
 EndProject

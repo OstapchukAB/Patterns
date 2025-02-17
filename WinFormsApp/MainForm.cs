@@ -1,4 +1,4 @@
-using MyClassLib;
+using FabricMethodClassLib;
 
 namespace WinFormsApp
 {

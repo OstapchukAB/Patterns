@@ -1,4 +1,4 @@
-﻿namespace MyClassLib.FactoryMethod
+﻿namespace FabricMethodClassLib.FactoryMethod
 {
     //Фабричный метод: Класс FileReaderFactory использует фабричный метод для создания экземпляров IFileReader на основе расширения файла.
     //фабричный метод FileReaderFactory

@@ -1,4 +1,4 @@
-﻿namespace MyClassLib
+﻿namespace FabricMethodClassLib
 {
     public interface IFileService
     {
