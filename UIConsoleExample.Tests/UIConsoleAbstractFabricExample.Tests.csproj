@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\UIConsoleExample\UIConsoleExample.csproj" />
+    <ProjectReference Include="..\UIConsoleExample\UIConsoleAbstractFabricExample.csproj" />
   </ItemGroup>
 
   <ItemGroup>

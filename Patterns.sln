@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyClassLib", "MyClassLib\MyClassLib.csproj", "{631FF1D5-716E-4D6E-AC3F-075240368C81}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FabrciMethodClassLib", "MyClassLib\FabrciMethodClassLib.csproj", "{631FF1D5-716E-4D6E-AC3F-075240368C81}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConsole", "UIConsole\UIConsole.csproj", "{4249C1FB-90CF-4389-91E1-78F67C4290A5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConsoleFabricMethodExample", "UIConsole\UIConsoleFabricMethodExample.csproj", "{4249C1FB-90CF-4389-91E1-78F67C4290A5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsApp", "WinFormsApp\WinFormsApp.csproj", "{A7CAC68F-A571-43AA-AEA1-D2EC32C6F09A}"
 EndProject
@@ -13,13 +13,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIAbstractFabric", "UIAbstr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIFabricMethod", "UIFabricMethod\UIFabricMethod.csproj", "{A54CD313-FDD6-44E8-B164-6B27A81F5438}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConsoleExample", "UIConsoleExample\UIConsoleExample.csproj", "{7FB06D74-D304-4164-B180-6A3FAAD0EC77}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConsoleAbstractFabricExample", "UIConsoleExample\UIConsoleAbstractFabricExample.csproj", "{7FB06D74-D304-4164-B180-6A3FAAD0EC77}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConsoleExample.Tests", "UIConsoleExample.Tests\UIConsoleExample.Tests.csproj", "{CC325AD8-3F6F-45B0-A22B-FE1F5021E706}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConsoleAbstractFabricExample.Tests", "UIConsoleExample.Tests\UIConsoleAbstractFabricExample.Tests.csproj", "{CC325AD8-3F6F-45B0-A22B-FE1F5021E706}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Example02", "Example02\Example02.csproj", "{BDF7EABF-3612-4332-BBC6-747E7D4A53AC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FabricMethodExample02", "Example02\FabricMethodExample02.csproj", "{BDF7EABF-3612-4332-BBC6-747E7D4A53AC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIExample03FabricMethod", "UIExample03FabricMethod\UIExample03FabricMethod.csproj", "{6F5FFC60-B3EE-477A-BEBC-BE75575C63A7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIFabricMethodExample03", "UIExample03FabricMethod\UIFabricMethodExample03.csproj", "{6F5FFC60-B3EE-477A-BEBC-BE75575C63A7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UIConsoleStrategy", "UIConsoleStrategy\UIConsoleStrategy.csproj", "{22722F6E-A4E8-4F49-98DB-6021BF1A251E}"
 EndProject
