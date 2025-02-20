@@ -21,8 +21,7 @@
 - Сложность отладки может увеличиться, так как поведение объекта зависит от динамически составленной цепочки декораторов.
  */
 #endregion
-#region Пример реализации на C#
-using System;
+
 
 namespace DecoratorPatternExample
 {
@@ -78,7 +77,7 @@ namespace DecoratorPatternExample
 
     class Program
     {
-        static void Main(string[] args)
+         void Main(string[] args)
         {
             IComponent component = new ConcreteComponent();
             Console.WriteLine("Без декораторов: " + component.Operation());
@@ -93,5 +92,3 @@ namespace DecoratorPatternExample
         }
     }
 }
-
-#endregion
