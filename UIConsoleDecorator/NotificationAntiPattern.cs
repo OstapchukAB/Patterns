@@ -24,53 +24,82 @@
  */
 #endregion
 
-namespace NotificationAntiPattern
+namespace NotificationAntiPattern;
+
+public interface INotification
 {
-    // Класс, который объединяет всю логику отправки уведомлений
-    public class Notification
+    void Send(string message);
+}
+
+class BaseNotification : INotification
+{
+    public void Send(string message)
     {
-        public string Message { get; set; }
-        public bool SendSMS { get; set; }
-        public bool SendEmail { get; set; }
-        public bool SendPush { get; set; }
+        Console.WriteLine("Отправка  уведомления: " + message);
+    }
+}
 
-        public Notification(string message, bool sendSMS, bool sendEmail, bool sendPush)
-        {
-            Message = message;
-            SendSMS = sendSMS;
-            SendEmail = sendEmail;
-            SendPush = sendPush;
-        }
-
-        // Метод, который отправляет уведомление по разным каналам в зависимости от настроек
-        public void Send()
-        {
-            Console.WriteLine("Отправка базового уведомления: " + Message);
-            if (SendSMS)
-            {
-                // Логика отправки SMS
-                Console.WriteLine("Отправлено SMS уведомление: " + Message);
-            }
-            if (SendEmail)
-            {
-                // Логика отправки Email
-                Console.WriteLine("Отправлено Email уведомление: " + Message);
-            }
-            if (SendPush)
-            {
-                // Логика отправки Push уведомления
-                Console.WriteLine("Отправлено Push уведомление: " + Message);
-            }
-        }
+public abstract class NotificationDecorator:INotification
+{
+    private readonly INotification _notification;   
+        
+    public NotificationDecorator(INotification notification)
+    {
+        _notification = notification;
     }
 
-    class Program
+    public virtual void Send(string message)
     {
-        static void Main()
-        {
-            // Пример использования: уведомление отправляется по всем каналам
-            Notification notification = new Notification("Важное уведомление!", true, true, true);
-            notification.Send();
-        }
+        _notification.Send(message);
+    }
+}
+public class SmsDecorator : NotificationDecorator
+{
+    public SmsDecorator(INotification notification) : base(notification)
+    {
+    }
+    public override void Send(string message)
+    {
+        base.Send(message);
+        Console.WriteLine($"Отправка SMS:{message}");
+    }
+}
+public class EmmailDecorator : NotificationDecorator
+{
+    public EmmailDecorator(INotification notification) : base(notification)
+    {
+    }
+    public override void Send(string message)
+    {
+        base.Send(message);
+        Console.WriteLine($"Отправка Email:{message}");
+    }
+}
+
+public class PushDecorator : NotificationDecorator
+{
+    public PushDecorator(INotification notification) : base(notification)
+    {
+    }
+    public override void Send(string message)
+    {
+        base.Send(message);
+        Console.WriteLine($"Отправка Push:{message}");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        INotification notify= new BaseNotification();
+        var message = "Важное сообщение";
+       // notify.Send(message);
+        
+        new SmsDecorator(notify).Send(message);
+
+        new EmmailDecorator(notify).Send(message);
+
+        new PushDecorator(notify).Send(message);
     }
 }
