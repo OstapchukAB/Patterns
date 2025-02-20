@@ -24,7 +24,7 @@
  */
 #endregion
 
-namespace NotificationAntiPattern;
+namespace NotificationPatternDecorator;
 
 public interface INotification
 {
