@@ -92,14 +92,15 @@ class Program
 {
     static void Main()
     {
-        INotification notify= new BaseNotification();
+        INotification notification= new BaseNotification();
         var message = "Важное сообщение";
        // notify.Send(message);
         
-        new SmsDecorator(notify).Send(message);
+        notification= new SmsDecorator(notification);
 
-        new EmmailDecorator(notify).Send(message);
+        notification = new EmmailDecorator(notification);
 
-        new PushDecorator(notify).Send(message);
+        notification = new PushDecorator(notification);
+        notification.Send(message);
     }
 }
