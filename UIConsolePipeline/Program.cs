@@ -12,7 +12,7 @@
  */
 #endregion
 
-#region Канонический пример применения Паттерна -конвейер для обработки текста
+#region Пример применения Паттерна -конвейер для обработки текста
 /*
  Реализуем конвейер для обработки текста:
     Удаление пробелов.
@@ -69,7 +69,7 @@ namespace PatternPipeLine
      // TInput —  тип входных данных конвейера.
      // TOutput — тип выходных данных после выполнения всех шагов.
      // _steps —  список объектов, представляющих шаги конвейера.
-    public class Pipeline1<TInput, TOutput>
+    public class Pipeline<TInput, TOutput>
     {
         private readonly List<object> _steps = new List<object>();
 
@@ -88,9 +88,9 @@ namespace PatternPipeLine
         Каждый новый шаг "знает", что его входной тип (TOutput) совпадает с выходным типом предыдущего шага.
          */
         #endregion
-        public Pipeline1<TInput, TNewOutput> AddStep<TNewOutput>(IPipelineStep<TOutput, TNewOutput> step)
+        public Pipeline<TInput, TNewOutput> AddStep<TNewOutput>(IPipelineStep<TOutput, TNewOutput> step)
         {
-            var newPipeline = new Pipeline1<TInput, TNewOutput>();
+            var newPipeline = new Pipeline<TInput, TNewOutput>();
             newPipeline._steps.AddRange(_steps);
             newPipeline._steps.Add(step);
             return newPipeline;
@@ -130,15 +130,15 @@ namespace PatternPipeLine
         #region 5. Проблемы и ограничения данной реализации
         /*
         Рефлексия:
-        Метод Execute использует Invoke, что может быть медленно.
-        Решение: Заменить рефлексию на компиляцию делегатов через Expression или использовать dynamic.
+           Метод Execute использует Invoke, что может быть медленно.
+           Решение: Заменить рефлексию на компиляцию делегатов через Expression или использовать dynamic.
 
-    Безопасность типов:
-        Нет проверки на этапе компиляции, что типы шагов совместимы.
-        Ошибки (например, несовпадение TInput шага с TOutput предыдущего) проявятся только во время выполнения.
+        Безопасность типов:
+           Нет проверки на этапе компиляции, что типы шагов совместимы.
+           Ошибки (например, несовпадение TInput шага с TOutput предыдущего) проявятся только во время выполнения.
 
-    Иммутабельность:
-        Метод AddStep создает новый конвейер, что может быть неэффективно при частых изменениях.
+        Иммутабельность:
+           Метод AddStep создает новый конвейер, что может быть неэффективно при частых изменениях.
          */
         #endregion
     }
@@ -146,13 +146,13 @@ namespace PatternPipeLine
     //6. Альтернативная реализация (без рефлексии)
     //Чтобы избежать рефлексии, можно использовать делегаты:
     //Шаги добавляются как делегаты Func<TOutput, TNewOutput>, что обеспечивает безопасность типов и повышает производительность.
-    public class Pipeline2<TInput, TOutput>
+    public class PipelineWithDelegate<TInput, TOutput>
     {
         private readonly List<Func<object, object>> _steps = new List<Func<object, object>>();
 
-        public Pipeline2<TInput, TNewOutput> AddStep<TNewOutput>(Func<TOutput, TNewOutput> step)
+        public PipelineWithDelegate<TInput, TNewOutput> AddStep<TNewOutput>(Func<TOutput, TNewOutput> step)
         {
-            var newPipeline = new Pipeline2<TInput, TNewOutput>();
+            var newPipeline = new PipelineWithDelegate<TInput, TNewOutput>();
             newPipeline._steps.AddRange(_steps);
             newPipeline._steps.Add(o => step((TOutput)o));
             return newPipeline;
