@@ -75,17 +75,18 @@ namespace PatternPipeLine
 
         #region Описание работы метода AddStep
         /*
-        Назначение: Добавляет новый шаг в конвейер и возвращает новый экземпляр конвейера с обновленным типом выходных данных (TNewOutput).
+        Назначение: 
+            Добавляет новый шаг в конвейер и возвращает новый экземпляр конвейера с обновленным типом выходных данных (TNewOutput).
 
         Как работает:
-        Создает новый конвейер (newPipeline) с типом вывода TNewOutput.
-        Копирует все текущие шаги (_steps) из исходного конвейера в новый.
-        Добавляет переданный шаг (step) в новый конвейер.
-        Возвращает новый конвейер.
+            Создает новый конвейер (newPipeline) с типом вывода TNewOutput.
+            Копирует все текущие шаги (_steps) из исходного конвейера в новый.
+            Добавляет переданный шаг (step) в новый конвейер.
+            Возвращает новый конвейер.
 
-    Особенности:
-        Метод не изменяет текущий конвейер, а создает новый. Это позволяет строить цепочки шагов через fluent-интерфейс (например, .AddStep(...).AddStep(...)).
-        Каждый новый шаг "знает", что его входной тип (TOutput) совпадает с выходным типом предыдущего шага.
+        Особенности:
+            Метод не изменяет текущий конвейер, а создает новый. Это позволяет строить цепочки шагов через fluent-интерфейс (например, .AddStep(...).AddStep(...)).
+            Каждый новый шаг "знает", что его входной тип (TOutput) совпадает с выходным типом предыдущего шага.
          */
         #endregion
         public Pipeline<TInput, TNewOutput> AddStep<TNewOutput>(IPipelineStep<TOutput, TNewOutput> step)
@@ -97,10 +98,11 @@ namespace PatternPipeLine
         }
         #region Описание работы метода Execute
         /*
-        Назначение: Выполняет все шаги конвейера последовательно, передавая результат каждого шага следующему.
+        Назначение: 
+            Выполняет все шаги конвейера последовательно, передавая результат каждого шага следующему.
 
-     Как работает:
-        Инициализирует currentValue входными данными (input).
+        Как работает:
+            Инициализирует currentValue входными данными (input).
 
         Для каждого шага в _steps:
             Получает тип шага (stepType).
@@ -110,9 +112,9 @@ namespace PatternPipeLine
 
         Возвращает итоговое значение, приведенное к TOutput.
 
-     Особенности:
-        Использует рефлексию (GetMethod, Invoke), что может снижать производительность. В реальных проектах это можно заменить на компиляцию выражений или делегаты.
-        Не проверяет типы данных на этапе компиляции. Если типы шагов несовместимы, возникнет ошибка во время выполнения.
+        Особенности:
+            Использует рефлексию (GetMethod, Invoke), что может снижать производительность. В реальных проектах это можно заменить на компиляцию выражений или делегаты.
+            Не проверяет типы данных на этапе компиляции. Если типы шагов несовместимы, возникнет ошибка во время выполнения.
          */
         #endregion
         public TOutput Execute(TInput input)
@@ -146,28 +148,28 @@ namespace PatternPipeLine
     //6. Альтернативная реализация (без рефлексии)
     //Чтобы избежать рефлексии, можно использовать делегаты:
     //Шаги добавляются как делегаты Func<TOutput, TNewOutput>, что обеспечивает безопасность типов и повышает производительность.
-    public class PipelineWithDelegate<TInput, TOutput>
-    {
-        private readonly List<Func<object, object>> _steps = new List<Func<object, object>>();
+    //public class PipelineWithDelegate<TInput, TOutput>
+    //{
+    //    private readonly List<Func<object, object>> _steps = new List<Func<object, object>>();
 
-        public PipelineWithDelegate<TInput, TNewOutput> AddStep<TNewOutput>(Func<TOutput, TNewOutput> step)
-        {
-            var newPipeline = new PipelineWithDelegate<TInput, TNewOutput>();
-            newPipeline._steps.AddRange(_steps);
-            newPipeline._steps.Add(o => step((TOutput)o));
-            return newPipeline;
-        }
+    //    public PipelineWithDelegate<TInput, TNewOutput> AddStep<TNewOutput>(Func<TOutput, TNewOutput> step)
+    //    {
+    //        var newPipeline = new PipelineWithDelegate<TInput, TNewOutput>();
+    //        newPipeline._steps.AddRange(_steps);
+    //        newPipeline._steps.Add(o => step((TOutput)o));
+    //        return newPipeline;
+    //    }
 
-        public TOutput Execute(TInput input)
-        {
-            object current = input;
-            foreach (var step in _steps)
-            {
-                current = step(current);
-            }
-            return (TOutput)current;
-        }
-    }
+    //    public TOutput Execute(TInput input)
+    //    {
+    //        object current = input;
+    //        foreach (var step in _steps)
+    //        {
+    //            current = step(current);
+    //        }
+    //        return (TOutput)current;
+    //    }
+    //}
 
     //4. Использование
     class Program
@@ -181,12 +183,19 @@ namespace PatternPipeLine
            Тип TNewOutput автоматически выводится на основе шага. Например, если шаг возвращает int, то новый конвейер будет Pipeline<string, int>.
              */
             #endregion
-            var pipeline = new Pipeline1<string, string>()
+            var pipeline = new Pipeline<string, string>()
                 .AddStep(new RemoveWhitespaceStep())
                 .AddStep(new ToUpperStep())
                 .AddStep(new AddPrefixStep());
 
+            //Вариант с делегатами не работает
+            //var pipeline= new PipelineWithDelegate<string,string>();
+            //pipeline.AddStep(new RemoveWhitespaceStep().Process);
+            //pipeline.AddStep(new ToUpperStep().Process);
+            //pipeline.AddStep(new AddPrefixStep().Process);
+
             string input = "   Hello, Pipeline!   ";
+            Console.WriteLine(input);
             string result = pipeline.Execute(input);
 
             Console.WriteLine(result); // Вывод: "Processed: HELLO,PIPELINE!"
