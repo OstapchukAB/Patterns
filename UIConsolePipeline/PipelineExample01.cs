@@ -172,9 +172,9 @@ namespace PatternPipeLine
     //}
 
     //4. Использование
-    class Program
+    class PipelineExample01
     {
-        static void Main()
+         void Main()
         {
 
             #region Описание
