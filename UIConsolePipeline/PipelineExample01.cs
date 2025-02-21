@@ -176,19 +176,8 @@ namespace ExampleForProduction
             );
         }
 
-        public TOutput Execute(TInput input)
-        {
-            var result = _pipelineFunc(input);
-            if (result is not TOutput)
-            {
-                throw new InvalidOperationException("Тип результата не соответствует TOutput.");
-            }
-            else
-            {
-                return result;
-            }
+        public TOutput Execute(TInput input)=>_pipelineFunc(input);
 
-        }
     }
     class Program
     {
