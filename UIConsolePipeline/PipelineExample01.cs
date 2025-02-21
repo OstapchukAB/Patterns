@@ -148,33 +148,38 @@ namespace PatternPipeLine
     //6. Альтернативная реализация (без рефлексии)
     //Чтобы избежать рефлексии, можно использовать делегаты:
     //Шаги добавляются как делегаты Func<TOutput, TNewOutput>, что обеспечивает безопасность типов и повышает производительность.
-    //public class PipelineWithDelegate<TInput, TOutput>
-    //{
-    //    private readonly List<Func<object, object>> _steps = new List<Func<object, object>>();
+    public class PipelineWithDelegate<TInput, TOutput>
+    {
+        // Хранит составную функцию обработки данных
+        private readonly Func<TInput, TOutput> _pipelineFunc;
 
-    //    public PipelineWithDelegate<TInput, TNewOutput> AddStep<TNewOutput>(Func<TOutput, TNewOutput> step)
-    //    {
-    //        var newPipeline = new PipelineWithDelegate<TInput, TNewOutput>();
-    //        newPipeline._steps.AddRange(_steps);
-    //        newPipeline._steps.Add(o => step((TOutput)o));
-    //        return newPipeline;
-    //    }
+        // Приватный конструктор для создания нового конвейера с переданной функцией
+        private PipelineWithDelegate(Func<TInput, TOutput> pipelineFunc)
+        {
+            _pipelineFunc = pipelineFunc;
+        }
 
-    //    public TOutput Execute(TInput input)
-    //    {
-    //        object current = input;
-    //        foreach (var step in _steps)
-    //        {
-    //            current = step(current);
-    //        }
-    //        return (TOutput)current;
-    //    }
-    //}
+        // Конструктор по умолчанию. Решает проблему несовместимости типов через приведение.
+        public PipelineWithDelegate(): this(input => (TOutput)(object)input)
+        {
+        }
+
+
+        public PipelineWithDelegate<TInput, TNewOutput> AddStep<TNewOutput>(IPipelineStep<TOutput, TNewOutput> step)
+        {
+            return new PipelineWithDelegate<TInput, TNewOutput>(input => step.Process(_pipelineFunc(input)));
+        }
+
+        public TOutput Execute(TInput input)
+        {
+            return _pipelineFunc(input);
+        }
+    }
 
     //4. Использование
     class PipelineExample01
     {
-         void Main()
+       static  void Main()
         {
 
             #region Описание
@@ -183,16 +188,11 @@ namespace PatternPipeLine
            Тип TNewOutput автоматически выводится на основе шага. Например, если шаг возвращает int, то новый конвейер будет Pipeline<string, int>.
              */
             #endregion
-            var pipeline = new Pipeline<string, string>()
+            var pipeline = new PipelineWithDelegate<string, string>()
                 .AddStep(new RemoveWhitespaceStep())
                 .AddStep(new ToUpperStep())
                 .AddStep(new AddPrefixStep());
 
-            //Вариант с делегатами не работает
-            //var pipeline= new PipelineWithDelegate<string,string>();
-            //pipeline.AddStep(new RemoveWhitespaceStep().Process);
-            //pipeline.AddStep(new ToUpperStep().Process);
-            //pipeline.AddStep(new AddPrefixStep().Process);
 
             string input = "   Hello, Pipeline!   ";
             Console.WriteLine(input);
