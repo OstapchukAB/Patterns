@@ -1,9 +1,11 @@
-﻿namespace ExampleAsyncPipelineWithCancellToken
+﻿using Serilog; // Подключение библиотеки Serilog для логгирования
+
+namespace ExampleeAsyncPipelineWithCancellTokenWithSerilog
 {
-    // Асинхронный конвейер с поддержкой отмены операций.
+    // Асинхронный конвейер с поддержкой отмены и логгирования.
     public class AsyncPipeline<TInput, TOutput>
     {
-        // Функция, представляющая композицию всех шагов конвейера.
+        // Делегат, представляющий цепочку асинхронных операций.
         // Принимает входное значение и токен отмены, возвращает задачу с результатом.
         private readonly Func<TInput, CancellationToken, Task<TOutput>> _pipelineFunc;
 
@@ -17,35 +19,50 @@
         // Здесь входной и выходной типы совпадают, и используется identity-функция, обёрнутая в Task.FromResult.
         public static AsyncPipeline<T, T> CreateInitialPipeline<T>()
         {
-            return new AsyncPipeline<T, T>((input, cancellationToken) => Task.FromResult(input));
+            return new AsyncPipeline<T, T>((input, cancellationToken) =>
+            {
+                Log.Information("Initial pipeline step: Identity function called with input: {Input}", input);
+                return Task.FromResult(input);
+            });
         }
 
         // Метод AddStep позволяет добавить новый асинхронный шаг в конвейер.
         // Параметр step — функция, принимающая результат предыдущего шага и CancellationToken, возвращает Task с новым результатом.
         public AsyncPipeline<TInput, TNewOutput> AddStep<TNewOutput>(Func<TOutput, CancellationToken, Task<TNewOutput>> step)
         {
-            // Композиция функций:
-            // 1. Выполняется текущая цепочка (_pipelineFunc) для получения результата типа TOutput.
-            // 2. Затем этот результат передается в новую асинхронную функцию step, которая возвращает Task<TNewOutput>.
+            // Композиция функций: сначала выполняется текущая цепочка, затем новый шаг.
             return new AsyncPipeline<TInput, TNewOutput>(async (input, cancellationToken) =>
             {
+                Log.Information("Executing pipeline step with input: {Input}", input);
                 TOutput currentResult = await _pipelineFunc(input, cancellationToken);
-                return await step(currentResult, cancellationToken);
+                Log.Information("Result after previous steps: {CurrentResult}", currentResult);
+                TNewOutput newResult = await step(currentResult, cancellationToken);
+                Log.Information("Step completed with output: {NewResult}", newResult);
+                return newResult;
             });
         }
 
         // Метод Execute запускает конвейер с заданными входными данными и токеном отмены.
-        public Task<TOutput> Execute(TInput input, CancellationToken cancellationToken = default)
+        public async Task<TOutput> Execute(TInput input, CancellationToken cancellationToken = default)
         {
-            return _pipelineFunc(input, cancellationToken);
+            Log.Information("Starting pipeline execution with input: {Input}", input);
+            TOutput result = await _pipelineFunc(input, cancellationToken);
+            Log.Information("Pipeline execution completed with result: {Result}", result);
+            return result;
         }
     }
 
     class Program
     {
-        // Асинхронный Main для использования await и поддержки отмены.
-         async Task Main()
+        // Асинхронный Main позволяет использовать await.
+        static async Task Main()
         {
+            // Настройка Serilog: логгирование уровня Debug и вывод в консоль.
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Debug()
+                .WriteTo.Console()
+                .CreateLogger();
+
             // Создаем асинхронный конвейер, где вход и выход — string.
             var asyncPipeline = AsyncPipeline<string, string>
                 .CreateInitialPipeline<string>()
@@ -85,6 +102,9 @@
                     Console.WriteLine("Операция была отменена.");
                 }
             }
+
+            // Завершение работы логгера для корректного сброса всех логов.
+            Log.CloseAndFlush();
         }
     }
 }
