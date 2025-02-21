@@ -133,7 +133,7 @@ namespace ExampleForProduction
         {
             _pipelineFunc = pipelineFunc;
         }
-
+        #region Пояснение конструкции CreateInitialPipeline<T>()
         /*
          Конструкция CreateInitialPipeline<T>() — это статический фабричный метод, который создает начальный (пустой) конвейер
            с одинаковыми типами входных и выходных данных (TInput = TOutput = T).
@@ -160,6 +160,7 @@ namespace ExampleForProduction
           - Это "пустое" преобразование: принимает значение типа T и возвращает его без изменений. Фактически,
               это единичная функция (identity function), которая ничего не делает, но сохраняет тип данных.
          */
+        #endregion
         public static Pipeline<T, T> CreateInitialPipeline<T>()
         {
             return new Pipeline<T, T>(input => input);
@@ -211,7 +212,7 @@ namespace ExampleForProduction
             Console.WriteLine(s);
             string result = pipeline.Execute(s);
 
-            Console.WriteLine(result); // Вывод: "Processed: HELLO,PIPELINE!"
+            Console.WriteLine(result); 
         }
     }
 }
