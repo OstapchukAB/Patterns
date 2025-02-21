@@ -181,7 +181,7 @@ namespace ExampleForProduction
     }
     class Program
     {
-        static void Main()
+         void Main()
         {
 
             #region Описание
