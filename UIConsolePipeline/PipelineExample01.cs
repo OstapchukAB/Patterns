@@ -30,7 +30,7 @@
 ETL-процессах или сложных преобразованиях данных.
  */
 #endregion
-namespace PatternPipeLine
+namespace PatternPipeLine01
 {
     //1. Интерфейс шага конвейера
     public interface IPipelineStep<TInput, TOutput>
@@ -38,37 +38,12 @@ namespace PatternPipeLine
         TOutput Process(TInput input);
     }
 
-    //2. Конкретные шаги
-    //Шаг 1: Удаление пробелов
-    public class RemoveWhitespaceStep : IPipelineStep<string, string>
-    {
-        public string Process(string input)
-        {
-            return input.Replace(" ", "");
-        }
-    }
-    //Шаг 2: Преобразование в верхний регистр
-    public class ToUpperStep : IPipelineStep<string, string>
-    {
-        public string Process(string input)
-        {
-            return input.ToUpper();
-        }
-    }
 
-    //Шаг 3: Добавление префикса
-    public class AddPrefixStep : IPipelineStep<string, string>
-    {
-        public string Process(string input)
-        {
-            return $"Processed: {input}";
-        }
-    }
 
     //3. Класс конвейера
-     // TInput —  тип входных данных конвейера.
-     // TOutput — тип выходных данных после выполнения всех шагов.
-     // _steps —  список объектов, представляющих шаги конвейера.
+    // TInput —  тип входных данных конвейера.
+    // TOutput — тип выходных данных после выполнения всех шагов.
+    // _steps —  список объектов, представляющих шаги конвейера.
     public class Pipeline<TInput, TOutput>
     {
         private readonly List<object> _steps = new List<object>();
@@ -144,62 +119,79 @@ namespace PatternPipeLine
          */
         #endregion
     }
+}
 
-    //6. Альтернативная реализация (без рефлексии)
-    /*
-     Что улучшено
-
-        Избежание Reflection:
-        В оригинальном варианте шаги сохранялись в списке объектов, а вызов метода Process происходил с помощью reflection (method.Invoke).
-        Это снижало производительность и не обеспечивало строгой проверки типов на этапе компиляции.
-        В улучшенной версии используется композиция функций через делегаты (Func<TInput, TOutput>), что делает код более эффективным и безопасным.
-
-        Компоновка через Делегаты:
-        Вместо хранения каждого шага отдельно, создаётся единая функция (_pipelineFunc), которая последовательно вызывает добавленные шаги.
-        Это упрощает логику выполнения и повышает читаемость кода.
-
-        Флюентный Интерфейс:
-        Метод AddStep возвращает новый объект Pipeline с уже составленной функцией, что позволяет легко строить цепочку вызовов,
-        сохраняя неизменность состояния конвейера.
-
-        Строгая Типизация:
-        Благодаря композиции функций типы на каждом этапе проверяются компилятором,
-        что позволяет избежать возможных ошибок времени выполнения, связанных с неверным приведением типов.
-
-    Эти улучшения делают реализацию паттерна «Конвейер» более эффективной, безопасной и удобной для поддержки и расширения.
-     */
-    public class PipelineWithDelegate<TInput, TOutput>
+namespace ExampleForProduction
+{
+    public class Pipeline<TInput, TOutput>
     {
         // Хранит составную функцию обработки данных
         private readonly Func<TInput, TOutput> _pipelineFunc;
 
         // Приватный конструктор для создания нового конвейера с переданной функцией
-        private PipelineWithDelegate(Func<TInput, TOutput> pipelineFunc)
+        private Pipeline(Func<TInput, TOutput> pipelineFunc)
         {
             _pipelineFunc = pipelineFunc;
         }
 
-        // Конструктор по умолчанию. Решает проблему несовместимости типов через приведение.
-        public PipelineWithDelegate(): this(input => (TOutput)(object)input)
+        /*
+         Конструкция CreateInitialPipeline<T>() — это статический фабричный метод, который создает начальный (пустой) конвейер
+           с одинаковыми типами входных и выходных данных (TInput = TOutput = T).
+            Метод CreateInitialPipeline — это отправная точка для построения конвейера.
+               После него можно добавлять шаги, которые могут менять тип данных.
+
+        1. Назначение метода
+        Этот метод решает две ключевые проблемы:
+        Безопасная инициализация конвейера:
+        - Гарантирует, что начальный конвейер имеет одинаковые типы TInput и TOutput.
+        - Избегает небезопасного приведения типов, которое было в конструкторе по умолчанию.
+
+        Удобство создания конвейера:
+        - Позволяет явно указать, что конвейер начинается с типа T и пока не имеет шагов.
+
+         2. Преимущества подхода
+
+        Типобезопасность: Нет риска runtime-ошибок из-за несовместимости типов на старте.
+        Ясность:  Код явно указывает, что конвейер начинается с "пустого" преобразования.
+        Гибкость: Можно начать с любого типа T и постепенно менять его через шаги.
+
+
+        Лямбда input => input:
+          - Это "пустое" преобразование: принимает значение типа T и возвращает его без изменений. Фактически,
+              это единичная функция (identity function), которая ничего не делает, но сохраняет тип данных.
+         */
+        public static Pipeline<T, T> CreateInitialPipeline<T>()
         {
+            return new Pipeline<T, T>(input => input);
         }
 
 
-        public PipelineWithDelegate<TInput, TNewOutput> AddStep<TNewOutput>(IPipelineStep<TOutput, TNewOutput> step)
+
+        public Pipeline<TInput, TNewOutput>
+            AddStep<TNewOutput>(Func<TOutput, TNewOutput> step)
         {
-            return new PipelineWithDelegate<TInput, TNewOutput>(input => step.Process(_pipelineFunc(input)));
+            return new Pipeline<TInput, TNewOutput>(
+                input => step(_pipelineFunc(input))
+            );
         }
 
         public TOutput Execute(TInput input)
         {
-            return _pipelineFunc(input);
+            var result = _pipelineFunc(input);
+            if (result is not TOutput)
+            {
+                throw new InvalidOperationException("Тип результата не соответствует TOutput.");
+            }
+            else
+            {
+                return result;
+            }
+
         }
     }
-
-    //4. Использование
-    class PipelineExample01
+    class Program
     {
-       static  void Main()
+        static void Main()
         {
 
             #region Описание
@@ -208,15 +200,16 @@ namespace PatternPipeLine
            Тип TNewOutput автоматически выводится на основе шага. Например, если шаг возвращает int, то новый конвейер будет Pipeline<string, int>.
              */
             #endregion
-            var pipeline = new PipelineWithDelegate<string, string>()
-                .AddStep(new RemoveWhitespaceStep())
-                .AddStep(new ToUpperStep())
-                .AddStep(new AddPrefixStep());
+            var pipeline = Pipeline<string, string>
+                .CreateInitialPipeline<string>()
+                .AddStep(input => input.ToUpper())
+                .AddStep(input => input.Replace(" ", ""))
+                .AddStep(input => $"[Processed] {input}");
 
 
-            string input = "   Hello, Pipeline!   ";
-            Console.WriteLine(input);
-            string result = pipeline.Execute(input);
+            string s = "   Hello, Pipeline!   ";
+            Console.WriteLine(s);
+            string result = pipeline.Execute(s);
 
             Console.WriteLine(result); // Вывод: "Processed: HELLO,PIPELINE!"
         }
